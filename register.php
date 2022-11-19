@@ -66,7 +66,7 @@ if (isset($_POST["submit"])) {
                         $_SESSION['user'] = $userName;
                         $_SESSION['email'] = $userEmail;
 
-                        header('location: ../../setup.php');
+                        header('location: setup.php');
                         
                     } else {
 

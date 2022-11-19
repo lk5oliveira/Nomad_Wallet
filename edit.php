@@ -216,14 +216,14 @@ include('include/connect.inc.php');
 $editId = $_GET['edit'];
 $query = "SELECT * FROM transactions WHERE transactions_id = '$editId';";
 $queryExec = mysqli_query($connection, $query);
-$editResult = mysqli_fetch_row($queryExec);
-$transactionCategory = $editResult[7];
-$repeatId = $editResult[13];
-$paid = $editResult[11];
+$editResult = mysqli_fetch_array($queryExec);
+$transactionCategory = $editResult['transactions_category'];
+$repeatId = $editResult['transactions_repeat_id'];
+$paid = $editResult['transactions_complete'];
+    
+echo $repeatId;
 
-
-
-if(!empty($repeatId)){
+if($repeatId > 0){
     $query_get_all_repeats = "SELECT transactions_date, transactions_id, transactions_repeat_id FROM transactions WHERE transactions_repeat_id = $repeatId AND user_id = $userId ORDER BY transactions_date DESC;";
     $exec_get_all_repeats = mysqli_query($connection, $query_get_all_repeats);
     $num_of_repeats = mysqli_num_rows($exec_get_all_repeats); // Get the number of repeats.
@@ -241,6 +241,7 @@ if(!empty($repeatId)){
     }
 
     $rep = $num_of_repeats - $rep + 1;
+    
 }
 
 

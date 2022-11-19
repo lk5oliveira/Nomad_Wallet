@@ -13,6 +13,13 @@
         $yearDiff = '';
     }
 
+    $userName = $_SESSION['user'];
+    $spacePosition = strpos($userName, ' ', 0);
+    echo $spacePosition;
+    
+    if($spacePosition > 0) {
+        $userName = substr($userName, 0, $spacePosition);
+    }
 
     ?>
 
@@ -54,7 +61,7 @@
         <!--row 1-->
             <div id="greetings">
                 <h3 style="margin-right: 20px;color: #646464;">Hello, </h3>
-                <h3> <?=$_SESSION['user']?></h3>
+                <h3 class='greetings-name'> <?= $userName ?></h3>
             </div>
             <div id="add-transaction">
                 <div class="transfer-buttons-container" id="income" onclick="displayForm('income')">

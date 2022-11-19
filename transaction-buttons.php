@@ -41,7 +41,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     foreach($category as $catValue) {
         if($catValue === $categoryPost) {
             $validationCategory = true;
-            echo 'cat ok';
+            
         } else {
             $validation = false;
         }
@@ -98,7 +98,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         if(isset($_POST['repeat'])) {
             $repeat = $_POST['repeat'];
             $period = $_POST['repeat-period'];
-            $repeatTime = $_POST['amount-repeat'];        
+            $repeatTime = $_POST['amount-repeat'];
+            echo 'repeat on';     
         }
         $i = 1;
         $generatedId;
@@ -151,7 +152,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             createIdForMultipleTransfers('transactions_repeat_id');
             $category = $_POST["category"]; // If type is transfer then this input field is disabled, thus the key will not exist in a global scope - it's not in gloabal scope to avoid errors.
-    
+            $generatedId = '';
             for($i = 0; $i < $repeatTime;$i++) {
                 $date = $_POST["date"];
                 if($period == 'monthly') {
@@ -174,7 +175,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else { // INCOME TRANSACTION
             createIdForMultipleTransfers('transactions_repeat_id');
             $category = $_POST["category"]; // If type is transfer then this input field is disabled, thus the key will not exist in a global scope - it's not in gloabal scope to avoid errors.
-            echo 'oi';
+
             for($i = 0; $i < $repeatTime;$i++) {
                 $date = $_POST["date"];
                 if($period == 'monthly') {
@@ -185,7 +186,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                     mysqli_query($connection, $sql_insert_sql);
                 } else {
                     $date = date('Y-m-d', strtotime("+$i weeks", strtotime($date)));
-                    echo 'week';
+                    
                     $sql_insert_sql = "INSERT INTO transactions (transactions_date, transactions_description, transactions_type, transactions_value, transactions_category, transactions_country, transactions_currency, transactions_repeat_id, user_id)
                     VALUES ('$date','$description', '$type', '$value', '$category', '$country', '$currency', '$generatedId', '$userIdResult');";
             
@@ -195,8 +196,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     
         }
         
-        //header('Location:' . $_SERVER['HTTP_REFERER']);
-        print_R($_POST);
+        header('Location:' . $_SERVER['HTTP_REFERER']);
+       
     }
     
 }

@@ -374,6 +374,11 @@ body {
     align-items: center;
 }
 
+.greetings-name {
+    white-space: nowrap;
+    overflow: hidden;
+}
+
 #greetings > h3 {
     font-size: 3.0rem;
     letter-spacing: 3;
