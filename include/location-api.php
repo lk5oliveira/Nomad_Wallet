@@ -1,6 +1,6 @@
 <?php
     session_start();
-    include('include/world-currency.php');
+    include('world-currency.php');
     $country = '';
     $currencyCode = '';
     $currencySymbol = '';
@@ -49,12 +49,12 @@
     $country = $decodedData->country;
     $currencyCode = $decodedData->currency->currency_code;
     $currencyCodeHome = $_SESSION['defaultCurrency'];
-    include_once('include/world-currency.php');
+    include_once('world-currency.php');
     $currencySymbol = $currency_list[$currencyCode]['symbol'];
 
   
     // CURRENCY API
-    function getCurrencyRate($from, $to) {
+    function getCurrencyRate($from) {
         // Fetching JSON
         $req_url = 'https://v6.exchangerate-api.com/v6/bc29665b8b5123e8d32125a7/latest/' . $from;
         $response_json = file_get_contents($req_url);
@@ -70,7 +70,7 @@
 
                 // Check for success
                 if('success' === $response->result) {
-                    $currencyRate = $response->conversion_rates->$to;
+                    $currencyRate = $response->conversion_rates;
                 }
             
             }
@@ -78,9 +78,11 @@
                 // Handle JSON parse error...
             }
         }
-
         return $currencyRate;
     }
 
+    
+    
+    GetCurrencyRate('usd');
 
 ?>

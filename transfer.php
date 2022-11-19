@@ -8,6 +8,10 @@ backToIndex();
 include("include/connect.inc.php");
 include("include/world-currency.php");
 
+$exchangeRates = $_SESSION['exchangeRates'];
+$decoded_rates = json_encode($_SESSION['exchangeRates'], true);
+
+
 $validationMessage = '';
 
 if (isset($_POST["submit"])) {
@@ -378,7 +382,7 @@ if (isset($_POST["submit"])) {
                     </div>
                     <div class="input symbol-div" id="exchange">
                         <label for="exchange">Exchange rate</label>
-                        <input name="exchange" type="tel" data-js="money" class="symbol-input" id="exchange-field" value='<?= number_format($_SESSION['currencyRateHome'], 2, ",", ".")?>' required>
+                        <input name="exchange" type="tel" data-js="money" class="symbol-input" id="exchange-field" value='<?= number_format($exchangeRate->$_SESSION['defaultCurrency'], 2, ",", ".")?>' required>
                         <span class="currency-symbol" id="exchange-currency-code"></span>
                     </div>
 
@@ -466,6 +470,7 @@ function maskMoney(value) {
 <script>
 
 
+
 function updateCurrency(inputField, currencyCodeInput) {
     /* 
     * UPDATE THE CURRENCY CODE WHEN ANOTHER CURRENCY IS SELECTED
@@ -488,26 +493,45 @@ let valueTo = document.getElementById('value-to');
 let exchangeRate = document.getElementById('exchange-field');
 let currencyFieldFrom = document.getElementById('currency-field-from');
 let currencyFieldTo = document.getElementById('currency-field-to');
+let array_rates = <?=  $decoded_rates  ?>;
+
+
+function getExchangeRate() {
+    let array_rates = <?=  $decoded_rates  ?>;
+    let defaultCurrency = <?= $_SESSION['defaultCurrency'] ?>;
+    let currencyFieldFrom = document.getElementById('currency-field-from');
+    let currencyFieldTo = document.getElementById('currency-field-to');
+    
+    if(defaultCurrency != currencyFieldFrom || defaultCurrency != currencyFieldTo) {
+        return;
+    }
+
+
+}
 
 function invertCurrencyButton () {
     /* 
     * INVERT THE CURRENCIES ONCLICK
     * 
-    * RETURN STRING
+    * RETURN VOID
     */
+    let invertedRate = 1 / stringToFloat(exchangeRate.value);
+    let invertedRateToString = invertedRate.toFixed(2);
+    result = maskMoney(invertedRateToString); // Return string.
     let valueFrom = document.getElementById('value-from').value;
     let valueTo = document.getElementById('value-to').value;
     let currencyFieldFrom = document.getElementById('currency-field-from').value;
     let currencyFieldTo = document.getElementById('currency-field-to').value;
-    console.log(valueFrom.value, valueTo.value, currencyFieldFrom.value, currencyFieldTo.value);
 
     document.getElementById('currency-field-from').value = currencyFieldTo;
     document.getElementById('currency-field-to').value = currencyFieldFrom;
     document.getElementById('value-from').value = valueTo;
     document.getElementById('value-to').value = valueFrom;
+    document.getElementById('exchange-field').value = invertedRate;
 
     updateCurrency('currency-field-to', 'currency-code-to');
     updateCurrency('currency-field-from', 'currency-code-from');
+    calculateRate('value-from', 'value-to');
 }
 
 function stringToFloat(fieldId) {
@@ -549,7 +573,6 @@ exchangeRate.addEventListener(
     },
     false
 )
-
 
 valueFrom.addEventListener(
   "input", (e) => {

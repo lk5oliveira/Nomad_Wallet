@@ -1,4 +1,12 @@
 
+<?php
+    $userName = $_SESSION['user'];
+    $spacePosition = strpos($userName, ' ', 0);
+    
+    if($spacePosition > 0) {
+        $userName = substr($userName, 0, $spacePosition);
+    }
+?>
 <div class="" id="menu-bar">
             <a href="javascript:void(0);" class="hamburger-icon" onclick="slideIn()">
                 <i class="fa fa-bars"></i>
@@ -9,9 +17,9 @@
                     <i id="pic" class="fa-solid fa-user"></i>
                 </a>
                 <div class="name-status-close" id="name-status">
-                    <h6><?= $_SESSION['user']?></h6>
+                    <h6><?= $userName; ?></h6>
                     <a href="accounts.php" id="mode">
-    
+                    <h6 id="current-country"><i class="fa-solid fa-location-dot"></i> <?= $_SESSION['country'] ?></h6>
                     </a>
                 </div>
             </div>

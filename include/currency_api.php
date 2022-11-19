@@ -1,6 +1,6 @@
 <?php
 
-$include('../location-api.php');
+include('../location-api.php');
 
 function getCurrencyRate() {
     // Fetching JSON
@@ -22,7 +22,8 @@ function getCurrencyRate() {
                 // YOUR APPLICATION CODE HERE, e.g.
                 $base_price = 12; // Your price in USD
                 $convertion = number_format(($base_price * $response->conversion_rates->BRL), 2);
-
+                echo $convertion;
+                return $convertion;
             }
 
         }
@@ -31,7 +32,7 @@ function getCurrencyRate() {
         }
     echo $response->conversion_rates->BRL;
     }
-    return $convertion;
+    
 }
 getCurrencyRate();
 ?>

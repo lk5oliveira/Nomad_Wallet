@@ -4,7 +4,7 @@
 function backToIndex() {
     if(!$_SESSION['email']) {
 
-        header('location: ../../index.php');
+        header('location: index.php');
         exit();
 
     } elseif ($_SESSION['register'] == "register") {

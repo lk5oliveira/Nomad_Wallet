@@ -51,9 +51,8 @@
             
             $_SESSION['country'] = $country;
             $_SESSION['currencyCode'] = $currencyCode;
-            $_SESSION['currencyRateHome'] = getCurrencyRate($_SESSION['defaultCurrency'], $_SESSION['currencyCode']);
             $_SESSION['currencySymbol'] = $currencySymbol;
-            $_SESSION['currencyRateTravel'] = getCurrencyRate($_SESSION['currencyCode'], $_SESSION['defaultCurrency']);
+            $_SESSION['exchangeRates'] = GetCurrencyRate($_SESSION['defaultCurrency']);
 
 
                 $queryAlterCountry = "UPDATE `users` SET `usersCurrentCountry` = '$country', `usersCurrentCurrency` = '$currencyCode' WHERE `users`.`usersID` = $_SESSION[userID];";

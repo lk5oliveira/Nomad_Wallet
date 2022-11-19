@@ -13,14 +13,6 @@
         $yearDiff = '';
     }
 
-    $userName = $_SESSION['user'];
-    $spacePosition = strpos($userName, ' ', 0);
-    echo $spacePosition;
-    
-    if($spacePosition > 0) {
-        $userName = substr($userName, 0, $spacePosition);
-    }
-
     ?>
 
 

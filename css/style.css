@@ -402,6 +402,10 @@ form button:hover {
     height: 30%;
     padding-top: 20px;
     margin-top: 30px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 #picture{
@@ -415,13 +419,6 @@ form button:hover {
     padding: 15px 20px;
     border-radius: 100%;
     margin-bottom: 15px;
-}
-
-#status-home {
-    padding: 5px;
-    background-color: #6c757d;
-    border-radius: 10px;
-    font-size: 0.7rem;
 }
 
 #mode:link, #mode, #mode:visited {
@@ -438,11 +435,15 @@ form button:hover {
     text-transform: capitalize;
 }
 
-#status-travel {
+#current-country {
     padding: 5px;
-    background-color: #F66B0E;
+    background-color: #183d55;
     border-radius: 10px;
     font-size: 0.7rem;
+}
+
+.fa-location-dot {
+    color: #F66B0E
 }
 
 
