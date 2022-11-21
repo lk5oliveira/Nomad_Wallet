@@ -82,7 +82,5 @@
     }
 
     
-    
-    GetCurrencyRate('usd');
 
 ?>
