@@ -12,6 +12,13 @@ include("include/world-currency.php");
 include("include/check_transaction_is_transfer.php");
 include("include/check_transaction_user.php");
 
+/* Exchange rate variables */ 
+$exchangeRates = $_SESSION['exchangeRates'];
+$decoded_rates = json_encode($_SESSION['exchangeRates']); // JSON enconded for JS
+$localCurrency = $_SESSION['currencyCode'];
+$localRate = $exchangeRates->$localCurrency;
+
+
 /* SECURITY CHECK */
 
 if(is_null($_GET['edit'])) { // check if the id is given by URL parameters.
@@ -103,24 +110,24 @@ if (isset($_POST["submit"])) {
         
         // Prepare statment
 
-        $stmt = $connection->prepare("UPDATE `transactions` SET `transactions_date` = ?, 
+        $stmt = $connection->prepare("UPDATE `transactions` SET `transactions_date` = ?, `transactions_description` = ?, 
         `transactions_value` = ?, `transactions_country` = ?, 
         `transactions_currency` = ?, transactions_exchange_rate = ?
         WHERE `transactions_id` = ? AND user_id = '$userId';");
 
         // EDIT VALUES FROM THE ACCOUNT WHERE THE MONEY IS TRANSFERED FROM.
-        $stmt->bind_param("ssssss", $date, $valueFrom, $currentCountry, $from, $exchangeRate, $transfer_from_id);
+        $stmt->bind_param("sssssss", $date, $description, $valueFrom, $currentCountry, $from, $exchangeRate, $transfer_from_id);
         $stmt->execute();
 
         // EDIT VALUES FROM THE ACCOUNT THAT RECEIVES THE MONEY
-        $stmt->bind_param("ssssss", $date, $valueTo, $currentCountry, $to, $exchangeRate, $transfer_to_id);
+        $stmt->bind_param("sssssss", $date, $description, $valueTo, $currentCountry, $to, $exchangeRate, $transfer_to_id);
         $stmt->execute();
 
         $stmt->close();
         $connection->close();
     }
 
-    header('Location: /history.php');
+    header('Location: history.php');
     exit();
 }
 
@@ -424,7 +431,7 @@ if (isset($_POST["submit"])) {
                     </div>
                     <div class="input symbol-div" id="exchange">
                         <label for="exchange">Exchange rate</label>
-                        <input name="exchange" type="tel" data-js="money" class="symbol-input" id="exchange-field" value='<?= $transfer_rate; ?>' required>
+                        <input name="exchange" type="tel" data-js="money" class="symbol-input" id="exchange-field" data-rate='<?= $transfer_rate ?>' value='<?= $transfer_rate; ?>' required>
                         <span class="currency-symbol" id="exchange-currency-code"></span>
                     </div>
 
@@ -483,140 +490,10 @@ if (isset($_POST["submit"])) {
 </body>
 
 <script>
-/* 
-* CURRENCY MASK FOR INPUT FIELDS
-*   
-*/
-
-
-const $money = document.querySelectorAll('[data-js="money"]');
-
-$money.forEach(item =>  { 
-    item.addEventListener(
-  "input", (e) => {
-    e.target.value = maskMoney(e.target.value);
-  }),
-  false
-});
-
-function maskMoney(value) {
-  const valueAsNumber = value.replace(/\D+/g, "");
-  return new Intl.NumberFormat("pt-BR", {
-    style: 'decimal', 
-    minimumFractionDigits: 2, 
-    maximumFractionDigits: 2
-  }).format(valueAsNumber / 100);
-}
-
+    let array_rates = <?=  $decoded_rates  ?>;
+    let defaultCurrency = '<?= $_SESSION['defaultCurrency'] ?>';
 </script>
-
-<script>
-
-getTransactionId(); // Get the transaction ID for delete action
-
-function updateCurrency(inputField, currencyCodeInput) {
-    /* 
-    * UPDATE THE CURRENCY CODE WHEN ANOTHER CURRENCY IS SELECTED
-    * Update the currency code (e.g USD, EUR) on the span field before the input value.
-    * RETURN STRING
-    */
-    let selectedCurrency = document.getElementById(inputField).value;
-    let currencyCodefield = document.getElementById(currencyCodeInput);
-    currencyCodefield.innerHTML = selectedCurrency.toUpperCase();
-}
-
-updateCurrency('currency-field-to', 'currency-code-to');
-updateCurrency('currency-field-from', 'currency-code-from');
-
-</script>
-
-<script>
-let valueFrom = document.getElementById('value-from');
-let valueTo = document.getElementById('value-to');
-let exchangeRate = document.getElementById('exchange-field');
-let currencyFieldFrom = document.getElementById('currency-field-from');
-let currencyFieldTo = document.getElementById('currency-field-to');
-
-function invertCurrencyButton () {
-    /* 
-    * INVERT THE CURRENCIES ONCLICK
-    * 
-    * RETURN STRING
-    */
-    let valueFrom = document.getElementById('value-from').value;
-    let valueTo = document.getElementById('value-to').value;
-    let currencyFieldFrom = document.getElementById('currency-field-from').value;
-    let currencyFieldTo = document.getElementById('currency-field-to').value;
-    console.log(valueFrom.value, valueTo.value, currencyFieldFrom.value, currencyFieldTo.value);
-
-    document.getElementById('currency-field-from').value = currencyFieldTo;
-    document.getElementById('currency-field-to').value = currencyFieldFrom;
-    document.getElementById('value-from').value = valueTo;
-    document.getElementById('value-to').value = valueFrom;
-
-    updateCurrency('currency-field-to', 'currency-code-to');
-    updateCurrency('currency-field-from', 'currency-code-from');
-}
-
-function stringToFloat(fieldId) {
-    // RETURN FLOAT
-    return parseFloat(document.getElementById(fieldId).value.replaceAll('.','').replace(',','.'));
-}
-
-
-function calculateRate(updateFieldId, fieldToUpdateId) {
-
-    /* 
-    * CALCULATE THE EXCHANGE VALUES WHEN VALUE FROM/TO ARE UPDATED
-    * Calculates the exchange rate when a value is modified.
-    * Properties STRING informing the input ID.
-    * RETURN STRING
-    */
-
-    updatedValue = stringToFloat(updateFieldId); // float
-    exchangeRate = stringToFloat('exchange-field'); // float
-
-    let result;
-
-    if (updateFieldId == 'value-to') {
-        result = updatedValue / exchangeRate; // Return num.
-    } else {
-        result = updatedValue * exchangeRate; // Return num.
-    }
-
-    let resultToString = result.toFixed(2);
-
-    result = maskMoney(resultToString); // Return string.
-
-    document.getElementById(fieldToUpdateId).value = result; // Return string - Update the value of the field with the exchange result.
-}
-
-exchangeRate.addEventListener(
-    'input', (e) => {
-        calculateRate('value-from', 'value-to');
-    },
-    false
-)
-
-
-valueFrom.addEventListener(
-  "input", (e) => {
-    calculateRate('value-from', 'value-to');
-  },
-  false
-)
-
-valueTo.addEventListener(
-  "input", (e) => {
-    calculateRate('value-to', 'value-from');
-  },
-  false
-)
-
-</script>
-
-
-
+<script src="include/JS/transferPage.js"></script>
 
 
 </html>

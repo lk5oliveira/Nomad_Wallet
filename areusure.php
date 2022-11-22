@@ -76,7 +76,7 @@
         <h2 class='title' id='title'>Delete?</h2>
         <p>Are you sure you want to delete this transaction?</p>
         <div class="buttons">
-            <form action="/include/delete.php" method="post">
+            <form action="include/delete.php" method="post">
                 <input type="hidden" name="id" id="id-input-delete" require>
                 <?php if ($_SERVER['REQUEST_URI'] != '/history.php') : ?>
                     <input type="hidden" name="all" id="all-input" value="all" disabled required>

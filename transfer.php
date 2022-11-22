@@ -80,7 +80,7 @@ if (isset($_POST["submit"])) {
         $connection->close();
     }
 
-    header('Location:' . $_SERVER['HTTP_REFERER']);
+    header('Location: history.php');
     exit();
 }
 
@@ -377,14 +377,14 @@ if (isset($_POST["submit"])) {
                         </div>
                         <div class="input" id="value-div">
                             <label for="value">Value</label>
-                            <input name="value-from" type="tel" class="value" id="value-from" data-js="money" value='0,00' onchange="calculateRate('value-from', 'value-to')" required />
+                            <input name="value-from" type="tel" class="value" id="value-from" data-js="money" value='0,00' required />
                             <span class="currency-symbol" id="currency-code-from"></span>
                         </div>
                         <i class="fa-solid fa-right-left" onclick="invertCurrencyButton();"></i>
                     </div>
                     <div class="input symbol-div" id="exchange">
                         <label for="exchange">Exchange rate</label>
-                        <input name="exchange" type="tel" data-js="money" class="symbol-input" id="exchange-field" value='<?= number_format($localRate, 2, ",", ".")?>' required>
+                        <input name="exchange" type="tel" data-js="money" class="symbol-input" data-rate='<?= number_format($localRate, 4, ",", ".")?>' id="exchange-field" value='<?= number_format($localRate, 2, ",", ".")?>' required>
                         <span class="currency-symbol" id="exchange-currency-code"></span>
                     </div>
 
@@ -439,219 +439,12 @@ if (isset($_POST["submit"])) {
         </div>
 
     </div>
+    <script>
+        let array_rates = <?=  $decoded_rates  ?>;
+        let defaultCurrency = '<?= $_SESSION['defaultCurrency'] ?>';
+    </script>
+    <script src="include/JS/transferPage.js"></script>
 </body>
-
-<script>
-/* 
-* CURRENCY MASK FOR INPUT FIELDS
-*   
-*/
-
-
-const $money = document.querySelectorAll('[data-js="money"]');
-
-$money.forEach(item =>  { 
-    item.addEventListener(
-  "input", (e) => {
-    e.target.value = maskMoney(e.target.value);
-  }),
-  false
-});
-
-function maskMoney(value) {
-  const valueAsNumber = value.replace(/\D+/g, "");
-  return new Intl.NumberFormat("pt-BR", {
-    style: 'decimal', 
-    minimumFractionDigits: 2, 
-    maximumFractionDigits: 2
-  }).format(valueAsNumber / 100);
-}
-
-function maskValueToMoney(value) {
-    /**
-     * MASK A VALUE TO MONEY CURRENCY BEFORE INSERTING IN A INPUT VALUE
-     * This mask keeps values in the money mask standard
-     * RETURN STRING
-     */
-    let resultToString = value.toFixed(2);
-
-    result = maskMoney(resultToString);
-
-    return result;
-}
-
-</script>
-
-<script>
-
-
-
-function updateCurrency(inputField, currencyCodeInput) {
-    /* 
-    * UPDATE THE CURRENCY CODE WHEN ANOTHER CURRENCY IS SELECTED
-    * Update the currency code (e.g USD, EUR) on the span field before the input value.
-    * RETURN STRING
-    */
-    let selectedCurrency = document.getElementById(inputField).value;
-    let currencyCodefield = document.getElementById(currencyCodeInput);
-    currencyCodefield.innerHTML = selectedCurrency.toUpperCase();
-}
-
-updateCurrency('currency-field-to', 'currency-code-to');
-updateCurrency('currency-field-from', 'currency-code-from');
-
-</script>
-
-<script>
-let valueFrom = document.getElementById('value-from');
-let valueTo = document.getElementById('value-to');
-let exchangeRate = document.getElementById('exchange-field');
-let currencyFieldFrom = document.getElementById('currency-field-from');
-let currencyFieldTo = document.getElementById('currency-field-to');
-let array_rates = <?=  $decoded_rates  ?>;
-let defaultCurrency = '<?= $_SESSION['defaultCurrency'] ?>';
-
-
-function updateExchangeRate() {
-    /**
-     * UPDATE EXCHANGE RATE WHEN A CURRENCY IS UPDATED
-     * It only works if one of the currencies is the user's default currency
-     * The array is generated in a session when logged in
-     * The rates are updated when the users log in
-     * RETURN VOID
-     */
-    console.log('executed');
-    let array_rates = <?=  $decoded_rates  ?>;
-    let defaultCurrency = '<?= $_SESSION['defaultCurrency'] ?>';
-    let exchangeRateField = document.getElementById('exchange-field');
-    let currencyFieldFrom = document.getElementById('currency-field-from');
-    let currencyFieldTo = document.getElementById('currency-field-to');
-    let currencyFieldFromValue = currencyFieldFrom.value.toUpperCase();
-    let currencyFieldToValue = currencyFieldTo.value.toUpperCase();
-
-    
-    if(defaultCurrency != currencyFieldFromValue && defaultCurrency != currencyFieldToValue) {
-        return; // default currency is not there -> display warning message.
-    }
-
-    if(currencyFieldFromValue == defaultCurrency) {
-        let exchangeRate = array_rates[currencyFieldToValue];
-        exchangeRateField.value = maskValueToMoney(exchangeRate);
-        calculateRate('value-from', 'value-to');
-        return;
-    }
-
-    if(currencyFieldToValue == defaultCurrency) {
-        let exchangeRate = array_rates[currencyFieldFromValue];
-        let convertExchangeRate = 1 / exchangeRate;
-        exchangeRateField.value = maskValueToMoney(convertExchangeRate);
-        calculateRate('value-to', 'value-from');
-        return
-    }
-
-}
-
-function invertCurrencyButton() {
-    /* 
-    * INVERT THE CURRENCIES ONCLICK
-    * 
-    * RETURN VOID
-    */
-    let valueFrom = document.getElementById('value-from').value;
-    let valueTo = document.getElementById('value-to').value;
-    let currencyFieldFrom = document.getElementById('currency-field-from').value;
-    let currencyFieldTo = document.getElementById('currency-field-to').value;
-
-    document.getElementById('currency-field-from').value = currencyFieldTo;
-    document.getElementById('currency-field-to').value = currencyFieldFrom;
-    document.getElementById('value-from').value = valueTo;
-    document.getElementById('value-to').value = valueFrom;
-    
-    
-    if(defaultCurrency == currencyFieldTo.toUpperCase()) {
-        updateExchangeRate();
-        updateCurrency('currency-field-to', 'currency-code-to');
-        updateCurrency('currency-field-from', 'currency-code-from');
-        calculateRate('value-from', 'value-to');
-        return
-    }
-
-    let invertedRate = 1 / stringToFloat('exchange-field');
-    let exchangeResult = maskValueToMoney(invertedRate);
-    console.log(exchangeResult);
-    document.getElementById('exchange-field').value = exchangeResult;
- 
-    updateCurrency('currency-field-to', 'currency-code-to');
-    updateCurrency('currency-field-from', 'currency-code-from');
-    calculateRate('value-from', 'value-to');
-}
-
-function stringToFloat(fieldId) {
-    // RETURN FLOAT
-    return parseFloat(document.getElementById(fieldId).value.replaceAll('.','').replace(',','.'));
-}
-
-
-function calculateRate(updatedFieldId, fieldToUpdateId) {
-
-    /* 
-    * CALCULATE THE EXCHANGE VALUES WHEN VALUE FROM/TO ARE UPDATED
-    * Calculates the exchange rate when a value is modified.
-    * Properties STRING informing the input ID.
-    * RETURN STRING
-    */
-
-    updatedValue = stringToFloat(updatedFieldId); // float
-    exchangeRate = stringToFloat('exchange-field'); // float
-
-    let result;
-
-    if (updatedFieldId == 'value-to') {
-        result = updatedValue / exchangeRate; // Return num.
-    } else {
-        result = updatedValue * exchangeRate; // Return num.
-    }
-
-
-    document.getElementById(fieldToUpdateId).value = maskValueToMoney(result); // Return string - Update the value of the field with the exchange result.
-}
-
-exchangeRate.addEventListener(
-    'input', (e) => {
-        calculateRate('value-from', 'value-to');
-    },
-    false
-)
-
-valueFrom.addEventListener(
-  "input", (e) => {
-    calculateRate('value-from', 'value-to');
-  },
-  false
-)
-
-valueTo.addEventListener(
-  "input", (e) => {
-    calculateRate('value-to', 'value-from');
-  },
-  false
-)
-
-currencyFieldFrom.addEventListener(
-  "input", (e) => {
-    updateExchangeRate();
-  },
-  false
-)
-
-currencyFieldTo.addEventListener(
-  "input", (e) => {
-    updateExchangeRate();
-  },
-  false
-)
-
-</script>
 
 
 
