@@ -49,11 +49,11 @@
                     <div class="location-info">
                         <span class="country">
                         <i class="fa-solid fa-location-dot"></i>
-                            World-wide
+                            Main wallet
                         </span>
                         <span class="currency">
                         <i class="fa-solid fa-money-bill-1-wave"></i>
-                            USD
+                            <?=  $_SESSION['defaultCurrency']; ?>
                         </span>
                     </div>
                     <div class="balance">
