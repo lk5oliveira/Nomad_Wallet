@@ -1,10 +1,99 @@
 <html lang="en">
+    <style>
+        .content-account {
+            margin-top: 100px;
+            padding: 20px;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+
+        .account-div {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .account-name {
+            font-weight: 700;
+            font-size: 1.5rem;
+            padding: 5px;
+            z-index: 999;
+        }
+
+        .account-details {
+            padding: 1rem;
+            border-radius: 20px;
+            background: linear-gradient(145deg, #d7d7d7, #ffffff);
+            box-shadow: 20px 20px 60px #cbcbcb, -20px -20px 60px #ffffff;
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .row-details {
+            flex-basis: 100%;
+        }
+
+        .account-balance {
+            text-align: end;
+            padding: 5px;
+            border-radius: 10px;
+            background-color: #183d55;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .country-titles {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .account-countries {
+            display: flex;
+            flex-direction: row;
+            flex-wrap: wrap;
+            gap: 10px;
+            border-radius: 5px;
+        }
+
+        .used-country {
+            background-color: #cbcbcb;
+            color: #343434;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        /* RESPONSIVE TABLET AND SMALL LAPTOP SCREENS */
+
+        @media screen and (min-width: 481px) and (max-width: 1300px) {
+            .content-account {
+                margin: 0px 0px 0px 60px;
+            }
+
+            .account-div {
+                flex-basis: 30%;
+            }
+        }
+
+        /* RESPONSIVE PC AND BIG SCREENS */
+        @media screen and (min-width: 1301px) {
+            .content-account {
+                margin: 0px;
+            }
+        }
+
+    </style>
 <head>
     <?php
 
         session_start();
         include('include/login/verify_login.inc.php');
         include('include/total.php');
+        include('include/generate_account_list.php');
         backToIndex();
 
     ?>
@@ -25,14 +114,11 @@
     <title>Wallets</title>
 </head>
 <body onresize="resize();">
-    
 
 
     <div id="main-container">
 
     <?php include('menu.php'); ?>
-
-    <?php include('transaction-buttons.php');?>
 
 
         <div class="page-title">
@@ -41,92 +127,50 @@
 
 
 
-        <div class="content" id="content">
-            
+        <div class="content-account" id="content-account">
+            <div class="account-div">
+                <span class="account-name">{currencyCode}</span>
+                <div class="account-details">
+                    <div class="account-balance row-details">
+                        <span><i class="fa-solid fa-money-bill-1-wave"></i> {balance}</span>
+                    </div>
+                    <span class="country-titles row-details"><i class="fa-solid fa-location-dot"></i> Used in</span>
+                    <div class="account-countries row-details">
+                        <span class="used-country">{country}</span>
+                        <span class="used-country">{country}</span>
+                    </div>
+                </div>
+            </div>
+
+
+
+
+
+
+          <!--
             <div class="card-container main-account-div">
-                <h3 class="card-title">Home wallet</h3>
+                <h3 class="card-title"><?=  $_SESSION['defaultCurrency']; ?></h3>
                 <div class="main-account content-div" id="main-account">
                     <div class="location-info">
                         <span class="country">
-                        <i class="fa-solid fa-location-dot"></i>
-                            Main wallet
-                        </span>
                         <span class="currency">
                         <i class="fa-solid fa-money-bill-1-wave"></i>
-                            <?=  $_SESSION['defaultCurrency']; ?>
-                        </span>
-                    </div>
-                    <div class="balance">
-                        <span class="balance-text">BALANCE</span>
-                        <span class="travel-value">
                             <?php htmlspecialchars($total = getTotal('all', 'all', $_SESSION['defaultCurrency']) + floatval($_SESSION['initialValue']));
-                            echo htmlspecialchars($_SESSION['defaultSymbol']) . number_format($total, 2);?>
-                        </span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="card-container travelling-account-div">
-                <div class="title-container">
-                    <h3 class="card-title">Travel wallet</h3>
-
-                </div>
-                <div class="travelling-account content-div" id="travelling-account">
-                    <div class="location-info">
-                        <span class="country">
-                        <i class="fa-solid fa-location-dot"></i>
-                            <?= htmlspecialchars($_SESSION['country']); ?>
-                        </span>
-                        <span class="currency">
-                        <i class="fa-solid fa-money-bill-1-wave"></i>
-                            <?= htmlspecialchars($_SESSION['currencyCode']); ?>
+                            echo htmlspecialchars($_SESSION['defaultSymbol']) . number_format($total, 2); ?>
                         </span>
                     </div>
                     <div class="balance">
-                        <span class="balance-text">BALANCE</span>
-                        <span class="travel-value"><?php $total = number_format(getTotal('all', 'all', $_SESSION['currencyCode']), 2); echo htmlspecialchars($_SESSION['currencySymbol']) . $total;?></span>
+
                     </div>
                 </div>
             </div>
+        --->
 
-            <div id="add-transaction">
-                <div class="transfer-buttons-container" id="income" onclick="displayForm('income');toggleCountryCurrency();">
-                    <i class="fa-solid fa-plus income-icon icon"></i>
-                    <span class="income-text">Add income</span>
-                </div>
-                <div class="transfer-buttons-container" id="Expense" onclick="displayForm('expense');toggleCountryCurrency();">
-                    <i class="fa-solid fa-minus expense-icon icon"></i>    
-                    <span class="expense-text">Add expense</span>
-                </div>
-                <div class="transfer-buttons-container" id="transfer" onclick="displayForm('transfer');toggleCountryCurrency();">
-                    <i class="fa-solid fa-arrow-right-arrow-left transfer-icon icon"></i>
-                    <span class="transfer-text">Transfer</span>
-                </div>
-            </div>
 
 
         </div>
         
     </div>
-
-    <script>
-        const cb = document.getElementById("checkbox");
-        const travellingAccountDiv = document.getElementById('travelling-account')
-
-        function travelCardCheckBox () {
-
-            if (cb.checked === true) {
-                travellingAccountDiv.style.filter = "none";
-                travellingAccountDiv.style.opacity = "1";
-            } else {
-                travellingAccountDiv.style.filter = "grayscale(1)";
-                travellingAccountDiv.style.opacity = "0.3";
-            }
-        };
-
-        travelCardCheckBox ();
-        
-    </script>
 
 </body>
 </html>
