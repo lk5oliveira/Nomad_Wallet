@@ -1,3 +1,12 @@
+<?php
+
+session_start();
+include('include/login/verify_login.inc.php');
+include('include/total.php');
+include('include/generate_account_list.php');
+backToIndex();
+
+?>
 <html lang="en">
     <style>
         .content-account {
@@ -6,31 +15,104 @@
             display: flex;
             flex-direction: row;
             flex-wrap: wrap;
+            justify-content: space-between;
             width: 100%;
+            gap: 1rem;
         }
 
         .account-div {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            flex-basis: 100%;
         }
 
         .account-name {
             font-weight: 700;
-            font-size: 1.5rem;
+            font-size: 1.75rem;
             padding: 5px;
-            z-index: 999;
+            z-index: 3;
         }
 
         .account-details {
             padding: 1rem;
             border-radius: 20px;
+            width: 100%;
             background: linear-gradient(145deg, #d7d7d7, #ffffff);
             box-shadow: 20px 20px 60px #cbcbcb, -20px -20px 60px #ffffff;
             display: flex;
             flex-direction: row;
             flex-wrap: wrap;
             gap: 10px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .fa-circle {
+            color: #85bb65;
+            font-size: 1rem;
+        }
+
+        .account-details:before {
+            content: ' ';
+            display: block;
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.2;
+            border-radius: 20px;
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-position: 0% 50% ;
+        }
+
+        .img-1:before {
+            background-image: url('img/account/digital_nomad_1.webp');
+        }
+
+        .img-2:before {
+            background-image: url('img/account/digital_nomad_2.webp');
+        }
+
+        .img-3:before {
+            background-image: url('img/account/digital_nomad_3.webp');
+        }
+
+        .img-4:before {
+            background-image: url('img/account/digital_nomad_4.webp');
+        }
+
+        .img-5:before {
+            background-image: url('img/account/digital_nomad_5.webp');
+        }
+
+        .img-7:before {
+            background-image: url('img/account/digital_nomad_7.webp');
+        }
+
+        .img-8:before {
+            background-image: url('img/account/digital_nomad_8.webp');
+        }
+
+        .img-9:before {
+            background-image: url('img/account/digital_nomad_9.webp');
+        }
+        .img-10:before {
+            background-image: url('img/account/digital_nomad_10.webp');
+        }
+
+        .img-11:before {
+            background-image: url('img/account/digital_nomad_11.webp');
+        }
+
+        .img-12:before {
+            background-image: url('img/account/digital_nomad_12.webp');
+        }
+
+        .img-13:before {
+            background-image: url('img/account/digital_nomad_13.webp');
         }
 
         .row-details {
@@ -60,6 +142,10 @@
             border-radius: 5px;
         }
 
+        small {
+            font-size: 50% !important;
+        }
+
         .used-country {
             background-color: #cbcbcb;
             color: #343434;
@@ -72,6 +158,7 @@
         @media screen and (min-width: 481px) and (max-width: 1300px) {
             .content-account {
                 margin: 0px 0px 0px 60px;
+                overflow: scroll;
             }
 
             .account-div {
@@ -83,20 +170,16 @@
         @media screen and (min-width: 1301px) {
             .content-account {
                 margin: 0px;
+                overflow: scroll;
+            }
+
+            .account-div {
+                flex-basis: 30%;
             }
         }
 
     </style>
 <head>
-    <?php
-
-        session_start();
-        include('include/login/verify_login.inc.php');
-        include('include/total.php');
-        include('include/generate_account_list.php');
-        backToIndex();
-
-    ?>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -115,59 +198,16 @@
 </head>
 <body onresize="resize();">
 
-
     <div id="main-container">
 
     <?php include('menu.php'); ?>
-
 
         <div class="page-title">
             <h2 class="title-text">Accounts</h2>
         </div>
 
-
-
         <div class="content-account" id="content-account">
-            <div class="account-div">
-                <span class="account-name">{currencyCode}</span>
-                <div class="account-details">
-                    <div class="account-balance row-details">
-                        <span><i class="fa-solid fa-money-bill-1-wave"></i> {balance}</span>
-                    </div>
-                    <span class="country-titles row-details"><i class="fa-solid fa-location-dot"></i> Used in</span>
-                    <div class="account-countries row-details">
-                        <span class="used-country">{country}</span>
-                        <span class="used-country">{country}</span>
-                    </div>
-                </div>
-            </div>
-
-
-
-
-
-
-          <!--
-            <div class="card-container main-account-div">
-                <h3 class="card-title"><?=  $_SESSION['defaultCurrency']; ?></h3>
-                <div class="main-account content-div" id="main-account">
-                    <div class="location-info">
-                        <span class="country">
-                        <span class="currency">
-                        <i class="fa-solid fa-money-bill-1-wave"></i>
-                            <?php htmlspecialchars($total = getTotal('all', 'all', $_SESSION['defaultCurrency']) + floatval($_SESSION['initialValue']));
-                            echo htmlspecialchars($_SESSION['defaultSymbol']) . number_format($total, 2); ?>
-                        </span>
-                    </div>
-                    <div class="balance">
-
-                    </div>
-                </div>
-            </div>
-        --->
-
-
-
+            <?php generateAccounts(); ?>
         </div>
         
     </div>
