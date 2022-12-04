@@ -1,9 +1,10 @@
 <?php
-        session_start();
+        include('include/location-api.php');
         include('include/login/verify_login.inc.php');
         backToIndex();
         include('include/connect.inc.php');
         include('include/world-currency.php');
+        
 
 
         $usersEmail = $_SESSION['email'];
@@ -89,14 +90,14 @@
                     //echo 'entrou';
                     for($i = 0;$i <= $countryArraySize;$i++) {
             
-                        if($countryCurrency[$i]['country'] == strtoupper($defaultCountry)) {
+                        if(strtoupper($countryCurrency[$i]['country']) == strtoupper($defaultCountry)) {
             
                             $validationDefaultCountry = true;
                             //echo 'true def';
             
                         }
             
-                        if ($countryCurrency[$i]['country'] == strtoupper($country)) {
+                        if (strtoupper($countryCurrency[$i]['country']) == strtoupper($country)) {
             
                             $validationTravelCountry = true;
                             //echo 'true';
@@ -130,9 +131,8 @@
             
                     $query = "UPDATE users SET `usersName` = '$name', `usersEmail` = '$email', 
                     `usersDefaultCountry` = '$defaultCountry', `usersDefaultCurrency` = '$defaultCurrency', `usersInitialValue` = '$initialValue',
-                    `usersCurrentCountry` = '$country', `usersCurrentCurrency` = '$currency', WHERE `users`.`usersID` = '$usersID';";
+                    `usersCurrentCountry` = '$country', `usersCurrentCurrency` = '$currency' WHERE `users`.`usersID` = '$usersID';";
 
-                    include('location-api.php');
                             
                     $_SESSION['currencyRateHome'] = getCurrencyRate($defaultCurrency, $currency);
                     $_SESSION['currencyRateTravel'] = getCurrencyRate($currency, $defaultCurrency);
@@ -154,14 +154,14 @@
                     }
             
                 } else {
-                    $validation = 'validation error';
+                    return $validation;
 
                     //header('location:' . $_SERVER['HTTP_REFERER']);
             
                 }
             }
 
-            return $validation;
+            
         }
 
         $validationError = profileValidation();
