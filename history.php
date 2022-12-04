@@ -36,7 +36,7 @@
 
         <?php include('menu.php'); ?>
 
-        <?php include('transaction-buttons.php'); ?>
+        <?php include('include/transaction-form.php'); ?>
 
         <?php include('areusure.php'); ?>
 

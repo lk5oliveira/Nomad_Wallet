@@ -7,7 +7,7 @@
 
     include('include/total.php');
     include('include/chart.php');
-    include('transaction-buttons.php');
+
     
     if(!isset($yearDiff)) {
         $yearDiff = '';
@@ -39,8 +39,10 @@
 
     <div class="" id="main-container">
 
+        <?php include('include/transaction-form.php'); ?>
+
         <div class="page-title">
-            <h2 class="title-text">DASHBOARD</h2>
+            <h2 class="title-text">Dashboard</h2>
         </div>
         <!---LEFT SIDE MENU-->
 
@@ -51,6 +53,10 @@
         <div id="dashboard">
     
         <!--row 1-->
+        <div id="greetings">
+            <h3 style="margin-right: 20px;color: #646464;">Hello, </h3>
+            <h3 class='greetings-name'> <?= $userName ?></h3>
+        </div>
         <?php include ('include/button-transactions.php'); ?>
 
         <!--row 2 - Balance and month comparison-->

@@ -19,6 +19,10 @@ include_once('include/connect.inc.php');
 $validation = true;
 $value = '';
 $description = '';
+/* Exchange rate variables */ 
+$exchangeRates = $_SESSION['exchangeRates'];
+
+
 
 
 if($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -29,10 +33,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     $day = $date[2];
     $year = $date[0];
     $type = $_POST['type'];
-    $categoryPost = ucfirst($_POST['category']);
-    $currency = $_POST['currency'];
+    $categoryPost = strtoupper($_POST['category']);
+    $currency = strtoupper($_POST['currency']);
     $country = $_POST['country'];
     $value = $_POST["value"];
+    $rate = $exchangeRates->$currency;
+
+    echo $rate;
     
     $validationCategory = false;
     $validationCountry = false;
@@ -128,13 +135,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     
             if (!isset($_POST['repeat']) && $type != 'transfer') {
                 $generatedId = NULL;
-                echo "not set";
+                
             } elseif (isset($lastTransferId)) {
                 $generatedId = $lastTransferId[0] + 1;
-                echo "is set";
+        
             } else {
                 $generatedId = 1;
-                "first time";
+                
             }
             
         }
@@ -158,15 +165,15 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if($period == 'monthly') {
                     $date = date('Y-m-d', strtotime("+$i months", strtotime($date)));
     
-                    $sql_insert_sql = "INSERT INTO transactions (transactions_date, transactions_description, transactions_type, transactions_value, transactions_category, transactions_country, transactions_currency, transactions_repeat_id, user_id)
-                    VALUES ('$date','$description', '$type', '-$value', '$category', '$country', '$currency', '$generatedId', '$userIdResult');";
+                    $sql_insert_sql = "INSERT INTO transactions (transactions_date, transactions_description, transactions_type, transactions_value, transactions_category, transactions_country, transactions_currency, transactions_exchange_rate, transactions_repeat_id, user_id)
+                    VALUES ('$date','$description', '$type', '-$value', '$category', '$country', '$currency', '$rate', '$generatedId', '$userIdResult');";
             
                     mysqli_query($connection, $sql_insert_sql);
                 } else {
                     $date = date('Y-m-d', strtotime("+$i weeks", strtotime($date)));
     
-                    $sql_insert_sql = "INSERT INTO transactions (transactions_date, transactions_description, transactions_type, transactions_value, transactions_category, transactions_country, transactions_currency, transactions_repeat_id, user_id)
-                    VALUES ('$date','$description', '$type', '-$value', '$category', '$country', '$currency', '$generatedId', '$userIdResult');";
+                    $sql_insert_sql = "INSERT INTO transactions (transactions_date, transactions_description, transactions_type, transactions_value, transactions_category, transactions_country, transactions_currency, transactions_exchange_rate transactions_repeat_id, user_id)
+                    VALUES ('$date','$description', '$type', '-$value', '$category', '$country', '$currency', '$rate', '$generatedId', '$userIdResult');";
             
                     mysqli_query($connection, $sql_insert_sql);
                 }
@@ -180,23 +187,22 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $date = $_POST["date"];
                 if($period == 'monthly') {
                     $date = date('Y-m-d', strtotime("+$i months", strtotime($date)));
-                    $sql_insert_sql = "INSERT INTO transactions (transactions_date, transactions_description, transactions_type, transactions_value, transactions_category, transactions_country, transactions_currency, transactions_repeat_id, user_id)
-                    VALUES ('$date','$description', '$type', '$value', '$category', '$country', '$currency', '$generatedId', '$userIdResult');";
+                    $sql_insert_sql = "INSERT INTO transactions (transactions_date, transactions_description, transactions_type, transactions_value, transactions_category, transactions_country, transactions_currency, transactions_exchange_rate, transactions_repeat_id, user_id)
+                    VALUES ('$date','$description', '$type', '$value', '$category', '$country', '$currency', '$rate', '$generatedId', '$userIdResult');";
             
                     mysqli_query($connection, $sql_insert_sql);
                 } else {
                     $date = date('Y-m-d', strtotime("+$i weeks", strtotime($date)));
                     
-                    $sql_insert_sql = "INSERT INTO transactions (transactions_date, transactions_description, transactions_type, transactions_value, transactions_category, transactions_country, transactions_currency, transactions_repeat_id, user_id)
-                    VALUES ('$date','$description', '$type', '$value', '$category', '$country', '$currency', '$generatedId', '$userIdResult');";
+                    $sql_insert_sql = "INSERT INTO transactions (transactions_date, transactions_description, transactions_type, transactions_value, transactions_category, transactions_country, transactions_currency, transactions_exchange_rate, transactions_repeat_id, user_id)
+                    VALUES ('$date','$description', '$type', '$value', '$category', '$country', '$currency', '$rate', '$generatedId', '$userIdResult');";
             
                     mysqli_query($connection, $sql_insert_sql);
                 }
             }
     
         }
-        
-        header('Location:' . $_SERVER['HTTP_REFERER']);
+        header('location: '. $_SERVER['HTTP_REFERER']);
        
     }
     

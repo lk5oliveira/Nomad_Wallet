@@ -385,7 +385,6 @@ if (isset($_POST["submit"])) {
                     <div class="input symbol-div" id="exchange">
                         <label for="exchange">Exchange rate</label>
                         <input name="exchange" type="tel" data-js="money" class="symbol-input" data-rate='<?= number_format($localRate, 4, ",", ".")?>' id="exchange-field" value='<?= number_format($localRate, 2, ",", ".")?>' required>
-                        <span class="currency-symbol" id="exchange-currency-code"></span>
                     </div>
 
                     <div class="input" id="date">
