@@ -155,10 +155,20 @@
 
         $countriesQuery = "SELECT transactions_country FROM transactions WHERE user_id = '$userIdResult' GROUP BY transactions_country ORDER BY transactions_date DESC;";
         $execCountriesQuery = mysqli_query($connection, $countriesQuery);
-
+        
 
         while($countriesList = mysqli_fetch_array($execCountriesQuery)) {
-            echo '<option value="' . $countriesList['transactions_country'] . '" id="' . $countriesList['transactions_country'] . '">'. $countriesList['transactions_country'] . '</option>';
+            if(!isset($_GET['country'])) {
+                echo '<option value="' . strtolower($countriesList['transactions_country']) . '" id="' . strtolower($countriesList['transactions_country']) . '">'. ucfirst(strtolower($countriesList['transactions_country'])) . '</option>';
+            } else {
+                if(strtolower($countriesList['transactions_country']) == strtolower($_GET['country'])) {
+                    echo
+                    '<option value="' . strtolower($countriesList['transactions_country']) . '" id="' . strtolower($countriesList['transactions_country']) . '" selected>'. ucfirst(strtolower($countriesList['transactions_country'])) . '</option>';
+                } else {
+                    echo
+                    '<option value="' . strtolower($countriesList['transactions_country']) . '" id="' . strtolower($countriesList['transactions_country']) . '">'. ucfirst(strtolower($countriesList['transactions_country'])) . '</option>';
+                }
+            }
         }
     }
 

@@ -1,6 +1,11 @@
 <?php
     session_start();
     include('include/login/verify_login.inc.php');
+    include('include/total.php');
+    include('include/generate_account_list.php');
+
+    $currencyList = getCurrencyList();
+
     backToIndex();
 
 ?>
@@ -40,8 +45,6 @@
         </div>
 
         <div class="content" id="content">
-            <?php include('include/total.php');?>
-
 
             <div class="period-result content-div" id="period-result">
                 <h2 class='title' id="result-text-static">RESULT</h2>
@@ -105,11 +108,21 @@
                     <select name="currencyFilter" id="currencyFilter" class="filter-currency" onChange="applyFilter(); updateChart();">
                     <option value="all" disabled selected>Currency</option>
                     <option value="all">All</option>
-                    <?php 
-                        $arr_keys = array_keys($currency_list);
-                        $arr_keys_size = sizeof($arr_keys) - 1;
-                        for($i = 0;$i <= $arr_keys_size;$i++){
-                            echo '<option value="' . strtolower($arr_keys[$i]) . '">' . ucwords(strtolower($currency_list[$arr_keys[$i]]['name'])) . '</option>';
+                    <?php
+                        print_r($currencyList);
+                        foreach($currencyList as $key => $currency) {
+                            if(!isset($_GET['currency'])) {
+                                echo
+                                '<option value="' . strtolower($currency[0]) . '">' . strtoupper($currency[0]) . '</option>';
+                            } else {
+                                if(strtolower($currency[0]) == strtolower($_GET['currency'])) {
+                                    echo
+                                    '<option value="' . strtolower($currency[0]) . '" selected>' . strtoupper($currency[0]) . '</option>';
+                                } else {
+                                    echo
+                                    '<option value="' . strtolower($currency[0]) . '">' . strtoupper($currency[0]) . '</option>';
+                                }
+                            }
                         }
                     ?>
                     </select>
@@ -160,7 +173,7 @@
                     <tr class="header">
                         <th class="check">Paid</th>
                         <th class="date">Date</th>
-                        <th class="value">Country</th>
+                        <th class="country">Country</th>
                         <th class="type">Type</th>
                         <th class="category">Category</th>
                         <th class="description">Description</th>
@@ -185,6 +198,25 @@
     var uniqueCategories = [];
     var categoriesTotal = [];
     var currentTotal = 0;
+    let month = document.getElementById("monthFilter");
+    let year = document.getElementById("yearFilter");
+    let currency = document.getElementById("currencyFilter");
+
+    function showAllDates() {
+        /**
+         * Function activated when the page loads and the currency filter is not equal to ALL
+         * This function works when the user selects to view the transaction history from a currency from the accounts page
+         * RETURN VOID
+         */
+
+        if(currency.value == 'all') {
+            return; // end of function.
+        }
+
+        year.value = '00';
+        month.value = '00';
+        return;
+    }
     
     // Get the total income and expense and calculates the result to display at the result div and updates the period text with the choosen month and year
     function periodTotal() { 
@@ -266,7 +298,6 @@
                 if(type && getComputedStyle(tr[i]).display == 'table-row') { //Get the HTML content
                 typeTxt = type.textContent || type.innerText;
                 valueTxt = parseFloat(value.innerHTML);
-                console.log(valueTxt);
 
                     if(typeTxt == 'expense' && categoryColumn.innerHTML == category) { // Sum the total for income rows
                         categoryTotal += Math.abs(valueTxt); // Generate the total value for each category
@@ -345,8 +376,7 @@
             tdCategories = tr[i].getElementsByTagName("td")[4]; // categories column
             tdcurrency = tr[i].getElementsByTagName("td")[6].getElementsByTagName("small")[0]; // currency column
             tdCountry = tr[i].getElementsByTagName("td")[2]; // Country column
-            
-            console.log(tdcurrency);
+        
 
             if (tdDate && tdType && tdCategories && tdcurrency && tdCountry) {
                 dateValue = tdDate.textContent || tdDate.innerText; // date cell values
@@ -511,6 +541,7 @@
     }
    
     setTimeout(function () {
+        showAllDates();
         applyFilter();
         periodTotal();
         updateChart();

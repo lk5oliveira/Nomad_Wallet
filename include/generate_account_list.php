@@ -15,7 +15,7 @@ function getCurrencyList() {
 
      //Prepared stmt
      $stmt = $connection->prepare("SELECT transactions_currency, transactions_country 
-     FROM transactions WHERE user_id = ? GROUP BY transactions_currency ORDER BY transactions_date DESC");
+     FROM transactions WHERE user_id = ? GROUP BY transactions_currency ORDER BY transactions_date ASC");
 
      $stmt->bind_param("s", $userId);
      $stmt->execute();
@@ -72,17 +72,17 @@ function generateAccounts() {
         if ($currency[0] == $_SESSION['defaultCurrency']) {  // Currency is equal to the user default currency
             echo 
             "<div class='account-div' style='order: 0'>
-                <span class='account-name'><i class='fa-solid fa-circle'></i> $currency[0] 🏡</span>
+                <a href='history.php?currency=$currency[0]' tarfet='_self' class='account-name'><i class='fa-solid fa-circle'></i> $currency[0] 🏡</a>
                 <div class='account-details img-$num' style='border: 2px solid #f66b0e'>";
         } elseif ($currency[0] == $_SESSION['currencyCode']) { // Currency is equal to user current country currency
             echo 
             "<div class='account-div' style='order: 1'>
-                <span class='account-name'><i class='fa-solid fa-circle'></i> $currency[0] 🧳</span>
+                <a href='history.php?currency=$currency[0]' tarfet='_self' class='account-name'><i class='fa-solid fa-circle'></i> $currency[0] 🧳</a>
                 <div class='account-details img-$num' style='border: 2px solid #f66b0e'>";
         } else {
             echo 
             "<div class='account-div' style='order: 2'>
-                <span class='account-name'>$currency[0]</span>
+                <a href='history.php?currency=$currency[0]' tarfet='_self' class='account-name'>$currency[0]</a>
                 <div class='account-details img-$num'>";
         }
             echo "
@@ -92,7 +92,7 @@ function generateAccounts() {
                     <span class='country-titles row-details'><i class='fa-solid fa-location-dot'></i> Used in</span>
                     <div class='account-countries row-details'>";
         foreach($countryList as $key => $country) {
-        echo        "<span class='used-country'>" . ucfirst(strtolower($country[1])) . "</span>";
+        echo        "<a href='history.php?currency=$currency[0]&country=$country[1]' tarfet='_self' class='country-list used-country'><span>" . ucfirst(strtolower($country[1])) . "</span></a>";
         }
         echo "
                      </div>

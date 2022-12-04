@@ -31,6 +31,7 @@ backToIndex();
             font-size: 1.75rem;
             padding: 5px;
             z-index: 3;
+            width: fit-content;
         }
 
         .account-details {
@@ -66,6 +67,19 @@ backToIndex();
             background-repeat: no-repeat;
             background-size: cover;
             background-position: 0% 50% ;
+        }
+
+        a.account-name, a.country-list {
+            text-decoration: none !important;
+            color: inherit !important;
+            transition-duration: 0.4s;
+            border-radius: 10px;
+        }
+
+        a.account-name:hover , a.country-list:hover, a.used-country:hover {
+            text-decoration: none !important;
+            cursor: pointer;
+            background-color: whitesmoke;
         }
 
         .img-1:before {
@@ -157,7 +171,8 @@ backToIndex();
 
         @media screen and (min-width: 481px) and (max-width: 1300px) {
             .content-account {
-                margin: 0px 0px 0px 60px;
+                margin: 0px 0px 0px 0px;
+                padding-left: 80px;
                 overflow: scroll;
             }
 
