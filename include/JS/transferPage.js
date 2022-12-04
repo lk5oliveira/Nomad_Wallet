@@ -11,28 +11,6 @@ let exchangeRate = document.getElementById('exchange-field');
 let currencyFieldFrom = document.getElementById('currency-field-from');
 let currencyFieldTo = document.getElementById('currency-field-to');
 
-/**
- * MASK MONEY TO INPUT FIELDS
- */
-const $money = document.querySelectorAll('[data-js="money"]');
-
-$money.forEach(item =>  { 
-    item.addEventListener(
-  "input", (e) => {
-    e.target.value = maskMoney(e.target.value);
-  }),
-  false
-});
-
-function maskMoney(value) {
-  const valueAsNumber = value.replace(/\D+/g, "");
-  return new Intl.NumberFormat("pt-BR", {
-    style: 'decimal', 
-    minimumFractionDigits: 2, 
-    maximumFractionDigits: 3
-  }).format(valueAsNumber / 100);
-}
-
 function maskValueToMoney(value, fractionDigits) {
     /**
      * MASK A VALUE TO MONEY CURRENCY BEFORE INSERTING IN A INPUT VALUE
@@ -162,7 +140,7 @@ function calculateRate(updatedFieldId, fieldToUpdateId) {
     }
 
 
-    fieldToUpdateId.value = maskValueToMoney(result, 2); // Return string - Update the value of the field with the exchange result.
+    fieldToUpdateId.value = maskMoney(maskValueToMoney(result, 2)); // Return string - Update the value of the field with the exchange result.
 }
 
 function updateDataSetRate() {

@@ -494,6 +494,7 @@ if (isset($_POST["submit"])) {
     let defaultCurrency = '<?= $_SESSION['defaultCurrency'] ?>';
 </script>
 <script src="include/JS/transferPage.js"></script>
+<script src="include/JS/transactionsForm.js"></script>
 
 
 </html>

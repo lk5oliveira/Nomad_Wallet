@@ -443,6 +443,7 @@ if (isset($_POST["submit"])) {
         let array_rates = <?=  $decoded_rates  ?>;
         let defaultCurrency = '<?= $_SESSION['defaultCurrency'] ?>';
     </script>
+    <script src="include/JS/transactionsForm.js"></script>
     <script src="include/JS/transferPage.js"></script>
 </body>
 

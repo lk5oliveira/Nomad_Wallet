@@ -218,15 +218,15 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <form action="" method="POST">
                     <div class="input">
                     <label for="currency">Wallet</label>
-                        <select name="currency" type="text" id="currency-field-to" required>
+                        <select name="currency" type="text" id="currency-field-to" onchange="updateCurrency('currency-field-to', 'value-symbol')" required>
                             <?php 
                                 $arr_keys = array_keys($currency_list);
                                 $arr_keys_size = sizeof($arr_keys) - 1;
                                 for($i = 0;$i <= $arr_keys_size;$i++){
-                                    if(strtolower($arr_keys[$i]) == strtolower($_SESSION['defaultCurrency'])) {
+                                    if(strtolower($arr_keys[$i]) == strtolower($_SESSION['currencyCode'])) {
                                         echo '<option value="' . strtolower($arr_keys[$i]) . '" selected>' . ucwords(strtolower($currency_list[$arr_keys[$i]]['name'])) . '</option>';
                                     } else {
-                                    echo '<option value="' . strtolower($arr_keys[$i]) . '">' . ucwords(strtolower($currency_list[$arr_keys[$i]]['name'])) . '</option>';
+                                        echo '<option value="' . strtolower($arr_keys[$i]) . '">' . ucwords(strtolower($currency_list[$arr_keys[$i]]['name'])) . '</option>';
                                     }
                                 }
                                 ?>
@@ -267,7 +267,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <div class="input symbol-div">
                         <label for="value">Value</label>
                         <input name="value" type="text" class="symbol-input" data-js="money" id="value" value='<?= $value; ?>' required />
-                        <!--<span class="currency-symbol" id="value-symbol"></span>-->
+                        <span class="currency-symbol" id="value-symbol"><?= $_SESSION['currencyCode'] ?></span>
                     </div>
 
                     <div class="input" id="country">
@@ -275,7 +275,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <select name="country" type="text" id="country-field" required>
                             <option value="select" disabled>select</option>
                             <?php for($i = 0;$i <= $countryArraySize;$i++) {
-                                if($countryCurrency[$i]['country'] == strtoupper($_SESSION['country'])) {
+                                if(strtoupper($countryCurrency[$i]['country']) == strtoupper($_SESSION['country'])) {
                                     echo '<option value="' . ucfirst(strtolower($countryCurrency[$i]['country'])) . '" selected>' . ucfirst(strtolower($countryCurrency[$i]['country'])) . '</option>';
                                 } else {
                                     echo '<option value="' . ucfirst(strtolower($countryCurrency[$i]['country'])) . '">' . ucfirst(strtolower($countryCurrency[$i]['country'])) . '</option>';
@@ -315,36 +315,9 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             
         </div>
 
-
+<script src="include/JS/transactionsForm.js"></script>
 <script>
 let transactionType = document.getElementById('type');
-
-
-const $money = document.querySelector('[data-js="money"]');
-
-$money.value = "0,00";
-
-$money.addEventListener(
-  "input",
-  (e) => {
-    e.target.value = maskMoney(e.target.value);
-  },
-  false
-);
-
-function maskMoney(value) {
-  const valueAsNumber = value.replace(/\D+/g, "");
-  return new Intl.NumberFormat("pt-BR", {
-    style: 'decimal', 
-    minimumFractionDigits: 2, 
-    maximumFractionDigits: 2
-  }).format(valueAsNumber / 100);
-}
-
-</script>
-
-
-<script>
 
 //Toggle repeat fields
     /*declaring variables*/
@@ -388,3 +361,5 @@ function closeForm() {
 
 
 </script>
+
+<script src="include/JS/transactionsForm.js"></script>
