@@ -61,20 +61,7 @@
                 
             </div>
 
-            <div id="add-transaction">
-                <div class="transfer-buttons-container" id="income" onclick="displayForm('income');toggleCountryCurrency();">
-                    <i class="fa-solid fa-plus income-icon icon"></i>
-                    <span class="income-text">Add income</span>
-                </div>
-                <div class="transfer-buttons-container" id="Expense" onclick="displayForm('expense');toggleCountryCurrency();">
-                    <i class="fa-solid fa-minus expense-icon icon"></i>    
-                    <span class="expense-text">Add expense</span>
-                </div>
-                <div class="transfer-buttons-container" id="transfer" onclick="displayForm('transfer');toggleCountryCurrency();">
-                    <i class="fa-solid fa-arrow-right-arrow-left transfer-icon icon"></i>
-                    <span class="transfer-text">Transfer</span>
-                </div>
-            </div>
+            <?php include ('include/button-transactions.php'); ?>
 
 
             <div class="filter-div" id="filter-div">
