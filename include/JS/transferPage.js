@@ -133,7 +133,7 @@ function calculateRate(updatedFieldId, fieldToUpdateId) {
 
     let result;
 
-    if (updatedFieldId == 'value-to') {
+    if (updatedFieldId == valueTo) {
         result = updatedValue / rateDataSet; // Return num.
     } else {
         result = updatedValue * rateDataSet; // Return num.

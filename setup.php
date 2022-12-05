@@ -171,11 +171,6 @@
                     <input type="text" name="initial-value" id="initial-value" placeholder="Initial balance" class="login-input">
                   </div>
                   <div class="mb-3" id="container-password">
-                  <span><i class="fa-solid fa-plane-departure" style="position: initial;"></i> Are you travelling right now?</span>
-                  <label class="switch">
-                    <input id="checkbox" type="checkbox" name="mode" value="travel">
-                    <span class="slider round"></span>
-                  </label>
                   </div>
                   <button type="submit" name="submit">Start</button>
                 </form>
@@ -186,8 +181,8 @@
         jQuery(function() {
             
             jQuery("#initial-value").maskMoney({ 
-            thousands:',', 
-            decimal:'.'
+            thousands:'.', 
+            decimal:','
             })
 
         });

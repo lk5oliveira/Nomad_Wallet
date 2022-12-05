@@ -115,6 +115,12 @@
                         $transactionsID = $originalTranferId[0];
                     }
                 }
+                
+                $transactionValue = $result['transactions_value'];
+                $transactionRate = $result['transactions_exchange_rate'];
+                $transactionCurrency = $result['transactions_currency'];
+                $convertedValue = $transactionValue / $transactionRate;
+                
 
                 echo '<tr id="row" style="display: table-row;">
                 <td id="transaction-paid"><form action="include/updateTransactionComplete.php?id='. $transactionsID.'" method="post"> <input type="checkbox" value="1" id="checkbox" name="complete" onChange="this.form.submit()"'; if($result['transactions_complete'] == '1') :  echo 'checked'; endif; echo '></form></td>' .
@@ -123,7 +129,7 @@
                 '<td id="transaction-type">' . $result['transactions_type'] . '</td>' .
                 '<td id="transaction-category">' . $result['transactions_category'] . '</td>' .
                 '<td>'; if(!empty($repeatId)) { echo '<span id="rep-span">' . $rep . '/' . $num_of_repeats . '</span>'; } echo $result['transactions_description'] . '</td>' .
-                '<td id="transaction-value">' . $result['transactions_value'] . '<small>' . $result['transactions_currency'] . '</small>' . '</td>' .
+                '<td id="transaction-value" data-converted="' . number_format($convertedValue, 4) . '">' . $result['transactions_value'] . '<small>' . $result['transactions_currency'] . '</small>' . '</td>' .
                 '<td id="edit">'; 
                 if (strtolower($result['transactions_type'] == 'transfer')) { echo "<a href='edit-transfer.php?edit=". (int)$transactionsID . "'>"; } 
                 else { echo "<a href='edit.php?edit=". (int)$transactionsID . "'>"; } echo '<i class="fa-solid fa-pencil table-icon"></i>' . '</td>' .

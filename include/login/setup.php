@@ -9,11 +9,11 @@ if($_SESSION['register'] == 'register') {
     
         $defaultCountry = mysqli_real_escape_string($connection, $_POST["defaultCountry"]);
         $defaultCurrency = mysqli_real_escape_string($connection, $_POST["defaultCurrency"]);
-        $initialValue = mysqli_real_escape_string($connection, $_POST["initial-value"]);
+        $initialValue = mysqli_real_escape_string($connection, str_replace(',','.',str_replace('.', '', $_POST["initial-value"])));
         $userID = $_SESSION['userID'];
         $userId = $_SESSION['user'];
         $userEmail = $_SESSION['email'];
-        
+    
         include_once ("../connect.inc.php");
     
         // Checking for register under the email or usernameId
@@ -25,7 +25,7 @@ if($_SESSION['register'] == 'register') {
             if(is_null($initialValue)) {
                 $initialValue = 0;
             }
-            $sql_insert = "UPDATE `users` SET `usersActiveMode` = '$mode', `usersDefaultCountry` = '$defaultCountry', 
+            $sql_insert = "UPDATE `users` SET `usersDefaultCountry` = '$defaultCountry', 
             `usersDefaultCurrency` = '$defaultCurrency', `usersInitialValue` = '$initialValue' WHERE `usersEmail` = '$userEmail';";
             if(mysqli_query($connection, $sql_insert)) {
                 $_SESSION['register'] = 'not registering';
@@ -43,8 +43,7 @@ if($_SESSION['register'] == 'register') {
                 $_SESSION['defaultSymbol'] = $currency_list[$defaultCurrency]['symbol'];
                 $_SESSION['defaultCurrency'] = $defaultCurrency;
 
-                $_SESSION['currencyRateHome'] = getCurrencyRate($_SESSION['defaultCurrency'], $_SESSION['currencyCode']);
-                $_SESSION['currencyRateTravel'] = getCurrencyRate($_SESSION['currencyCode'], $_SESSION['defaultCurrency']);
+                $_SESSION['exchangeRates'] = GetCurrencyRate($_SESSION['defaultCurrency']);
 
                 header('location: ../../panel.php');
 
@@ -53,7 +52,7 @@ if($_SESSION['register'] == 'register') {
             }
 
         } else {
-            //header('location: ../../index.php');
+            header('location: ../../index.php');
             echo 'else';
         }
    }

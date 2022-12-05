@@ -172,7 +172,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
                 } else {
                     $date = date('Y-m-d', strtotime("+$i weeks", strtotime($date)));
     
-                    $sql_insert_sql = "INSERT INTO transactions (transactions_date, transactions_description, transactions_type, transactions_value, transactions_category, transactions_country, transactions_currency, transactions_exchange_rate transactions_repeat_id, user_id)
+                    $sql_insert_sql = "INSERT INTO transactions (transactions_date, transactions_description, transactions_type, transactions_value, transactions_category, transactions_country, transactions_currency, transactions_exchange_rate, transactions_repeat_id, user_id)
                     VALUES ('$date','$description', '$type', '-$value', '$category', '$country', '$currency', '$rate', '$generatedId', '$userIdResult');";
             
                     mysqli_query($connection, $sql_insert_sql);

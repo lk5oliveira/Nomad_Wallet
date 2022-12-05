@@ -134,10 +134,11 @@
                     <?php
                     for ($i=2000; $i<=2050; $i++) { 
                         $year = date('Y');
-                        if ($i == $year) {?>
-                             <option value="<?= $i;?>" selected><?= $i;?></option><?php
-                        }?>
-                    <option value="<?= $i;?>"><?= $i;?></option><?php
+                        if ($i == $year) : ?>
+                            <option value="<?= $i;?>" selected><?= $i;?></option><?php
+                        else : ?>
+                            <option value="<?= $i;?>"><?= $i;?></option><?php
+                        endif;
                     }?>
                 </select>
                 
@@ -209,16 +210,17 @@
     function periodTotal() { 
         // Declare variables
         
-        var transactionValue = document.getElementById('transaction-value');
-        var transactionType = document.getElementById('transaction-type');
-        var table = document.getElementById('table');
-        var tr = table.getElementsByTagName('tr');
-        var checkbox = document.getElementById("checkbox").checked;
+        let transactionValue = document.getElementById('transaction-value');
+        let transactionType = document.getElementById('transaction-type');
+        let table = document.getElementById('table');
+        let tr = table.getElementsByTagName('tr');
+        let checkbox = document.getElementById("checkbox").checked;
         let allCategories = [];
+        let initialValue = <?= $_SESSION['initialValue']; ?>;
         totalIncome = 0;
         totalExpense = 0;
         totalResult = 0;
-        currentTotal = 0;
+        currentTotal = 0 + initialValue;
         categoriesTotal = [];
 
         // year filter variables
@@ -243,16 +245,17 @@
             categoryColumn = tr[i].getElementsByTagName('td')[4]; // Get the value of each row
             let checkbox = tr[i].getElementsByTagName('td')[0]; // checkbox
             description = tr[i].getElementsByTagName("td")[6];
-            
+                 
 
             if(date) {
                 let dateValue = date.innerHTML || date.innerText;
                 let [day, month, year] = dateValue.split("/"); // split the cell date into variables.
-                valueTxt = parseFloat(value.innerHTML);
-                currencyValue = currency.textContent || currency.innerText;
-                checkboxValue = checkbox.getElementsByTagName('input')[0].checked;
+                let valueTxt = parseFloat(value.innerHTML);
+                let currencyValue = currency.textContent || currency.innerText;
+                let checkboxValue = checkbox.getElementsByTagName('input')[0].checked;
+ 
 
-                if(currencyValue == currencyFilter && month <= monthFilter && year <= yearFilter && checkboxValue == false) {
+                if(monthFilter == '00' || month <= monthFilter && year <= yearFilter) {
                     currentTotal += valueTxt;
                 }
                 
