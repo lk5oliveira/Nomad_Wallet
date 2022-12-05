@@ -3,6 +3,9 @@
     include('include/login/verify_login.inc.php');
     include('include/total.php');
     include('include/generate_account_list.php');
+    include('include/world-currency.php');
+
+    $currenciesArray = json_encode($currency_list);
 
     $currencyList = getCurrencyList();
 
@@ -49,7 +52,9 @@
             <div class="period-result content-div" id="period-result">
                 <h2 class='title' id="result-text-static">RESULT</h2>
                 <p class='title-period' id="title-period"></p>
+                <span>Selected Period</span>
                 <h2 class='result' id="result"></h2>
+                <span>Current balance</span>
                 <h2 class='current-result' id="current-result"></h2>
             </div>
 
@@ -189,6 +194,22 @@
     let month = document.getElementById("monthFilter");
     let year = document.getElementById("yearFilter");
     let currency = document.getElementById("currencyFilter");
+    let currenciesArray = <?= $currenciesArray; ?>;
+    console.log(currenciesArray);
+
+    function updateCurrencySymbol() {
+        let balanceCurrency;
+
+        if (currencyFilter == 'all') {
+            balanceCurrency = '<?= $_SESSION['defaultCurrency']; ?>';
+            return currenciesArray[balanceCurrency]['symbol']
+        } 
+        
+        balanceCurrency = currencyFilter.toUpperCase();
+        return currenciesArray[balanceCurrency]['symbol']
+
+    }
+
 
     function showAllDates() {
         /**
@@ -205,7 +226,7 @@
         month.value = '00';
         return;
     }
-    
+
     // Get the total income and expense and calculates the result to display at the result div and updates the period text with the choosen month and year
     function periodTotal() { 
         // Declare variables
@@ -238,32 +259,41 @@
 
         // Looping over the table rows.
         for (i =1; i < tr.length; i++) {
+            let value;
+            let valueTxt;
             let date = tr[i].getElementsByTagName('td')[1]; // Get the date of each row
-            type = tr[i].getElementsByTagName('td')[3]; // Get the type of each row
-            value = tr[i].getElementsByTagName('td')[6]; // Get the value of each row
+            let type = tr[i].getElementsByTagName('td')[3]; // Get the type of each row
             let currency = tr[i].getElementsByTagName("td")[6].getElementsByTagName("small")[0]; // Get the currency of each row
-            categoryColumn = tr[i].getElementsByTagName('td')[4]; // Get the value of each row
+            let categoryColumn = tr[i].getElementsByTagName('td')[4]; // Get the value of each row
             let checkbox = tr[i].getElementsByTagName('td')[0]; // checkbox
-            description = tr[i].getElementsByTagName("td")[6];
-                 
+            let description = tr[i].getElementsByTagName("td")[6];
+
+            if(currencyFilter == 'all') {
+                value = parseFloat(tr[i].getElementsByTagName('td')[6].dataset['converted'].replaceAll(',','')); // Get the converted value to defatul currency of each row
+                valueTxt = parseFloat(value.toFixed(2));
+            } else {
+                value = tr[i].getElementsByTagName('td')[6];
+                valueTxt = parseFloat(value.innerHTML);
+            }
+            
 
             if(date) {
                 let dateValue = date.innerHTML || date.innerText;
                 let [day, month, year] = dateValue.split("/"); // split the cell date into variables.
-                let valueTxt = parseFloat(value.innerHTML);
                 let currencyValue = currency.textContent || currency.innerText;
                 let checkboxValue = checkbox.getElementsByTagName('input')[0].checked;
  
 
-                if(monthFilter == '00' || month <= monthFilter && year <= yearFilter) {
-                    currentTotal += valueTxt;
+                if(monthFilter == '00' || month <= monthFilter) {
+                    if (yearFilter == '00' || year <= yearFilter) {
+                        currentTotal += valueTxt;
+                    }
                 }
                 
             }
 
             if(type && getComputedStyle(tr[i]).display == 'table-row') { //Get the HTML content
                 typeTxt = type.textContent || type.innerText;
-                valueTxt = parseFloat(value.innerHTML);
                 totalResult += valueTxt;
 
                 if(typeTxt == 'income') { // Sum the total for income rows
@@ -300,7 +330,7 @@
         uniqueCategories.forEach(sumCategoriesValues);
 
         // display the choosen month and year text
-        //declaing variables
+        // declaing variables
 
         let monthTxt = month.options[month.selectedIndex].text;
 
@@ -308,9 +338,8 @@
         let title = yearTxt + " " + monthTxt; // Month and year title variable
         let result = totalResult; // result value variable
 
-
-        document.getElementById('result').innerHTML = '<?= $_SESSION['currencySymbol'] ?>' + result.toFixed(2); //prints the result
-        document.getElementById('current-result').innerHTML = '<?= $_SESSION['currencySymbol'] ?>' + currentTotal.toFixed(2);
+        document.getElementById('result').innerHTML = updateCurrencySymbol() + result.toFixed(2); //prints the result
+        document.getElementById('current-result').innerHTML = updateCurrencySymbol() + currentTotal.toFixed(2);
         
         if (yearTxt == 'All' && monthTxt == 'All') {
             let title = 'All periods';
