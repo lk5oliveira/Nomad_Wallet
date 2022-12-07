@@ -5,10 +5,18 @@
     include('include/login/verify_login.inc.php');
     backToIndex();  
 
+    if(!isset($_GET['currencyFilter'])) {
+        $currencyFilter = $_SESSION['currencyCode'];
+    } else {
+        $currencyFilter = $_GET['currencyFilter'];
+    }
+    
     include('include/total.php');
     include('include/chart.php');
+    include('include/generate_account_list.php');
 
-    
+    $currencyList = getCurrencyList();
+
     if(!isset($yearDiff)) {
         $yearDiff = '';
     }
@@ -51,11 +59,34 @@
         <!--Main dashboard - Using grid system to organize. Each child is a grid row-->
         
         <div id="dashboard">
-    
+     
         <!--row 1-->
         <div id="greetings">
-            <h3 style="margin-right: 20px;color: #646464;">Hello, </h3>
-            <h3 class='greetings-name'> <?= $userName ?></h3>
+            <form action="" method="get">
+                <select name="currencyFilter" id="currencyFilter" class="filter-currency" onchange="this.form.submit()">
+                        <?php
+                            foreach($currencyList as $key => $currency) {
+                                if(!isset($_GET['currencyFilter'])) {
+                                    if(strtolower($currency[0]) == strtolower($_SESSION['currencyCode'])) {
+                                        echo
+                                        '<option value="' . strtolower($currency[0]) . '" selected>' . strtoupper($currency[0]) . '</option>';
+                                    } else {
+                                    echo
+                                    '<option value="' . strtolower($currency[0]) . '">' . strtoupper($currency[0]) . '</option>';
+                                    }
+                                } else {
+                                    if(strtolower($currency[0]) == strtolower($_GET['currencyFilter'])) {
+                                        echo
+                                        '<option value="' . strtolower($currency[0]) . '" selected>' . strtoupper($currency[0]) . '</option>';
+                                    } else {
+                                        echo
+                                        '<option value="' . strtolower($currency[0]) . '">' . strtoupper($currency[0]) . '</option>';
+                                    }
+                                }
+                            }
+                        ?>
+                </select>
+            </form>
         </div>
         <?php include ('include/button-transactions.php'); ?>
 
@@ -64,7 +95,7 @@
             <div class="balance-container" id="balance">
             <h6 class="grid-title">Balance</h6>
                 <div class="dash-card balance-div" id="balance">
-                    <h5 class="dolar-text"><?= $_SESSION['defaultSymbol']?><?php $total = getTotal('all', 'all', $_SESSION['defaultCurrency']) + floatval($_SESSION['initialValue']); echo number_format(($total), 2, ',', '.');?></h5>
+                    <h5 class="dolar-text"><?= $_SESSION['defaultSymbol']?><?php $total = getTotal('all', 'all', $currencyFilter) + floatval($_SESSION['initialValue']); echo number_format(($total), 2, ',', '.');?></h5>
                 </div>
             </div>
             <div class="month-comparison-container" id="month-comparison">

@@ -101,11 +101,15 @@
                     <option value="all" disabled selected>Currency</option>
                     <option value="all">All</option>
                     <?php
-                        print_r($currencyList);
                         foreach($currencyList as $key => $currency) {
                             if(!isset($_GET['currency'])) {
+                                if(strtolower($currency[0]) == strtolower($_SESSION['currencyCode'])) {
+                                    echo
+                                    '<option value="' . strtolower($currency[0]) . '" selected>' . strtoupper($currency[0]) . '</option>';
+                                } else {
                                 echo
                                 '<option value="' . strtolower($currency[0]) . '">' . strtoupper($currency[0]) . '</option>';
+                                }
                             } else {
                                 if(strtolower($currency[0]) == strtolower($_GET['currency'])) {
                                     echo
@@ -217,6 +221,9 @@
          * This function works when the user selects to view the transaction history from a currency from the accounts page
          * RETURN VOID
          */
+        if(window.location.pathname == '/Nomad_Wallet/history.php') { // End of function if the user is acessing the page without any parameters
+            return;
+        }
 
         if(currency.value == 'all') {
             return; // end of function.

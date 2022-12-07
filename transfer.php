@@ -29,7 +29,7 @@ if (isset($_POST["submit"])) {
     $type = 'transfer';
 
     if(empty($valueFrom) || empty($valueTo) || empty($exchangeRate)) {
-        $validationMessage = "Type a value.";
+        $validationMessage = "value  can't be 0,00 or less";
         $validation_values = "validation-error";
     }
     elseif(!is_numeric($valueFrom) || !is_numeric($valueTo) || !is_numeric($exchangeRate)) {
@@ -78,10 +78,11 @@ if (isset($_POST["submit"])) {
 
         $stmt->close();
         $connection->close();
+
+        header('Location: history.php');
+        exit();
     }
 
-    header('Location: history.php');
-    exit();
 }
 
 
@@ -346,7 +347,7 @@ if (isset($_POST["submit"])) {
         <div class="content" id="content">
 
             <div class="top">
-                <i onclick="history.back()" class="fa-solid fa-arrow-left"></i>
+                <i onclick="location.href = 'panel.php'" class="fa-solid fa-arrow-left"></i>
                 <h2>TRANSFER</h2>
             </div>
 
@@ -430,11 +431,11 @@ if (isset($_POST["submit"])) {
                     </div>
 
                 <div class="button-container">
-                    <button class="cancel" onclick="history.back()">cancel</button>
-                    <button class="submit" type="submit" name="submit" onClick="this.form.submit(); this.disabled=true; this.value='Sending…'; this.style.background='gray'; ">Transfer</button>
+                    <button class="cancel" type="button" onclick="location.href = 'panel.php'">cancel</button>
+                    <button class="submit" type="submit" name="submit">Transfer</button>
                 </div>
             </form>
-
+            
         </div>
 
     </div>

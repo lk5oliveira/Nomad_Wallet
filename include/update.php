@@ -3,7 +3,6 @@ session_start();
 include("connect.inc.php");
 
 $id = $_GET['edit'];
-print_r($_POST);
 
 function validate() {
     $category = 

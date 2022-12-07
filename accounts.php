@@ -15,7 +15,7 @@ backToIndex();
             display: flex;
             flex-direction: row;
             flex-wrap: wrap;
-            justify-content: space-between;
+            justify-content: flex-start;
             width: 100%;
             gap: 1rem;
         }

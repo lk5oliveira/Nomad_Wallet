@@ -9,7 +9,7 @@
    //Create a variable for the session user ID.
     $sessionUser = $_SESSION['email'];
     $userId = mysqli_fetch_array(mysqli_query($connection, "SELECT * FROM users WHERE usersEmail = '$sessionUser';"));
-    $userMainCurrency = $_SESSION["defaultCurrency"];
+    $userMainCurrency = $currencyFilter;
     $userIdResult = $userId['usersID']; //USER ID
     $resultArray = [];
     $chartDataArray = [];

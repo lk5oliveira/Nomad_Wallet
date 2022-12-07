@@ -379,6 +379,20 @@ body {
     overflow: hidden;
 }
 
+#greetings form {
+    width: 100%;
+}
+
+.filter-currency {
+    width: fit-content;
+    padding: 10px;
+    border: 0px solid;
+    border-radius: 10px;
+    height: 100%;
+    font-weight: 900;
+    font-size: 1.3rem;
+}
+
 #greetings > h3 {
     font-size: 3.0rem;
     letter-spacing: 3;
@@ -860,9 +874,9 @@ border-radius: 10px;
     }
     
     #dashboard {
-        grid-template-areas: 
-        "greeting"
+        grid-template-areas:
         "add"
+        "greeting"
         "balance"
         "comparison"
         "table"
@@ -880,7 +894,6 @@ border-radius: 10px;
     }
 
     #greetings {
-        margin-top: 100px;
         flex-wrap: wrap;
     } 
 
@@ -889,8 +902,8 @@ border-radius: 10px;
         
     }
 
-    #add-transcation {
-        margin-bottom: 20px;
+    #add-transaction {
+        margin-top: 100px;
     }
 
     .chart-div {

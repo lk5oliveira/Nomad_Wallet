@@ -188,7 +188,7 @@ if(transactionBelongsToUser($id, $userId) == false) { //check if the transaction
     exit();
 }
 
-if(isTransfer($id) == 'transfer') { // check if the user is editing the transaction on the right edit page.
+if(isTransfer($id) == 'transfer') { // check if the user is not trying to edit a transfer transaction from these page.
     echo '<script>history.go(-1);</script>';
     exit();
 }
@@ -220,10 +220,6 @@ $editResult = mysqli_fetch_array($queryExec);
 $transactionCategory = $editResult['transactions_category'];
 $repeatId = $editResult['transactions_repeat_id'];
 $paid = $editResult['transactions_complete'];
-
-print_r($editResult);
-    
-echo $repeatId;
 
 if($repeatId > 0){
     $query_get_all_repeats = "SELECT transactions_date, transactions_id, transactions_repeat_id FROM transactions WHERE transactions_repeat_id = $repeatId AND user_id = $userId ORDER BY transactions_date DESC;";
