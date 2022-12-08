@@ -18,19 +18,20 @@
             exit();
         }
 
-        $usersEmail = mysqli_real_escape_string($connection, strtolower($_POST['user']));
+        $usersEmail = mysqli_real_escape_string($connection, $_POST['user']);
         $userPassword = mysqli_real_escape_string($connection, $_POST['password']);
+        echo $usersEmail;
 
         $_SESSION['return_user'] = $usersEmail; // return the user value to the input value when login failed.
 
+        $stmt = $connection->prepare("SELECT * FROM users WHERE usersEmail = ? AND usersPwd = ?;");
+        $stmt->bind_param("ss", $usersEmail, $userPassword);
+        $stmt->execute();
+        $stmtResult = $stmt->get_result();
 
-        $query = "SELECT * FROM users WHERE usersEmail = '$usersEmail' AND usersPwd = '$userPassword';"; // get user information
+        $array = $stmtResult->fetch_array(); // Get the data from the userID
 
-        $result = mysqli_query($connection, $query);
-
-        $array = mysqli_fetch_array($result); // all user information is stored on this array to save in SESSION variables
-        
-        $row = mysqli_num_rows($result);
+        $row = $stmtResult->num_rows; // Check if there's existing users with this userID
 
         if($row === 1) { // login success
 

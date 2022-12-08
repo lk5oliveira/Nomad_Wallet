@@ -16,6 +16,15 @@
     include('include/generate_account_list.php');
 
     $currencyList = getCurrencyList();
+    if(empty($currencyList)) {
+        $currencyList = array(array($currencyFilter));
+    }
+
+    $total = getTotal('all', 'all', $currencyFilter); // balance total
+
+    if(strtolower($currencyFilter )== strtolower($_SESSION['defaultCurrency'])) {
+        $total += floatval($_SESSION['initialValue']); // if balance total is equal to 
+    }
 
     if(!isset($yearDiff)) {
         $yearDiff = '';
@@ -95,7 +104,7 @@
             <div class="balance-container" id="balance">
             <h6 class="grid-title">Balance</h6>
                 <div class="dash-card balance-div" id="balance">
-                    <h5 class="dolar-text"><?= $_SESSION['defaultSymbol']?><?php $total = getTotal('all', 'all', $currencyFilter) + floatval($_SESSION['initialValue']); echo number_format(($total), 2, ',', '.');?></h5>
+                    <h5 class="dolar-text"><?= $_SESSION['defaultSymbol']?><?= number_format(($total), 2, ',', '.');?></h5>
                 </div>
             </div>
             <div class="month-comparison-container" id="month-comparison">

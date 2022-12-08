@@ -3,6 +3,7 @@
     
     include('include/login/verify_login.inc.php');
     include_once ("include/connect.inc.php");
+    include_once ("include/prepare_data.php");
 
     backToPanel();
     $userName = "";
@@ -18,17 +19,16 @@
 
 if (isset($_POST["submit"])) {
     
-    $userName = mysqli_real_escape_string($connection, $_POST["username"]);
-    $userEmail = mysqli_real_escape_string($connection, strtolower($_POST["email"]));
+    $userName = prepareData($_POST["username"]);
+    $userEmail = prepareData(strtolower($_POST["email"]));
     $userPassword = mysqli_real_escape_string($connection, $_POST["password"]);
-    $userPasswordRepeat= mysqli_real_escape_string($connection, $_POST["confirm-password"]);
+    $userPasswordRepeat = mysqli_real_escape_string($connection, $_POST["confirm-password"]);
 
-        
-
-        // Checking for register under the email or usernameId
-        $sql_select = "SELECT * FROM users WHERE usersEmail = '$userEmail';";
-        $sql_check = mysqli_query($connection, $sql_select);
-        $sql_result = mysqli_num_rows($sql_check);
+        // Checking for register under the email
+        $sql_select = $connection->prepare("SELECT * FROM users WHERE usersEmail = ?");
+        $sql_select->bind_param("s", $userEmail);
+        $sql_select->execute();
+        $sql_result = $sql_select->get_result()->num_rows;
 
         if($sql_result === 0) { // if the email is not registered
 
@@ -51,28 +51,23 @@ if (isset($_POST["submit"])) {
 
                 } else {
 
-                    $sql_insert = "INSERT INTO users (usersName, usersEmail, usersUid, usersPwd) VALUES ('$userName', '$userEmail', '$userId', '$userPassword')";
+                    $sql_insert = $connection->prepare("INSERT INTO users (usersName, usersEmail, usersPwd) VALUES (?, ?, ?)");
+                    $sql_insert->bind_param("sss", $userName, $userEmail, $userPassword);
+                    $sql_insert->execute();
+
+                    $_SESSION['register'] = 'register'; // THE USER JUST REGISTER AND IS ALLOWED TO GO TO SETUP PAGE
                     
-                    if(mysqli_query($connection, $sql_insert)) {
+                    //Discover the user ID - necessary to query some data from de DB
+                    $sql_select = $connection->prepare("SELECT * FROM users WHERE usersEmail = ?");
+                    $sql_select->bind_param("s", $userEmail);
+                    $sql_select->execute();
+                    $sqlResult = $sql_select->get_result()->fetch_all();
 
-                        $_SESSION['register'] = 'register'; // INFORM THAT THE USER JUST REGISTER AND IS ALLOWED TO GO TO SETUP PAGE
-                        
-                        //Discover the user ID - necessary to query some data from de DB
-                        $selectRegisteredUser = "SELECT * FROM users WHERE usersEmail = '$userEmail';";
-                        $sqlExec = mysqli_query($connection, $selectRegisteredUser);
-                        $sqlResult = mysqli_fetch_array($sqlExec);
+                    $_SESSION['userID'] = $sqlResult['usersID']; //Create a session with the user ID.
+                    $_SESSION['user'] = $userName;
+                    $_SESSION['email'] = $userEmail;
 
-                        $_SESSION['userID'] = $sqlResult['usersID']; //Create a session with the user ID.
-                        $_SESSION['user'] = $userName;
-                        $_SESSION['email'] = $userEmail;
-
-                        header('location: setup.php');
-                        
-                    } else {
-
-                        $validationMessage =  "ERROR: contact the support team (Q01)"; // Query error.
-                    
-                    }
+                    header('location: setup.php');
 
                 }
                 
@@ -127,11 +122,11 @@ if (isset($_POST["submit"])) {
                 <form action="" method="POST">
                     <div class="mb-3 <?= $classError_name ?>">
                         <i class="fa-solid fa-person"></i>
-                        <input type="text" name="username" id="username" class="login-input" placeholder="Name" value='<?= $userName; ?>' autocomplete="off" required>
+                        <input type="text" name="username" id="username" class="login-input" placeholder="Name" value='<?php if(isset($_POST["username"])) { echo htmlentities($_POST["username"]); }?>' autocomplete="off" required>
                     </div>
                     <div class="mb-3 <?= $classError_email ?>">
                         <i class="fa-solid fa-envelope"></i>
-                        <input type="email" name="email" id="email" placeholder="E-mail" class="login-input" value='<?= $userEmail; ?>' required>
+                        <input type="email" name="email" id="email" placeholder="E-mail" class="login-input" value='<?php if(isset($_POST["email"])) { echo htmlentities($_POST["email"]); }?>' required>
                     </div>
                     <div class="mb-3 <?= $classError_password ?>" id="container-password">
                         <i class="fa-solid fa-lock"></i>
