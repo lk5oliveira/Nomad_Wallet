@@ -3,13 +3,8 @@
 
 
     include('include/login/verify_login.inc.php');
+    include('include/prepare_data.php');
     backToIndex();  
-
-    if(!isset($_GET['currencyFilter'])) {
-        $currencyFilter = $_SESSION['currencyCode'];
-    } else {
-        $currencyFilter = $_GET['currencyFilter'];
-    }
     
     include('include/total.php');
     include('include/chart.php');
@@ -17,12 +12,12 @@
 
     $currencyList = getCurrencyList();
     if(empty($currencyList)) {
-        $currencyList = array(array($currencyFilter));
+         $currencyList= array(array($currencyFilter));
     }
 
     $total = getTotal('all', 'all', $currencyFilter); // balance total
 
-    if(strtolower($currencyFilter )== strtolower($_SESSION['defaultCurrency'])) {
+    if(strtolower($currencyFilter) == strtolower($_SESSION['defaultCurrency'])) {
         $total += floatval($_SESSION['initialValue']); // if balance total is equal to 
     }
 

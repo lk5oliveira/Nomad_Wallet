@@ -17,6 +17,12 @@
     $currentMonth = date('m');
     $currentYear = date('Y');
     $initialValue = floatval($_SESSION['initialValue']);
+
+    if(!isset($_GET['currencyFilter'])) {
+        $currencyFilter = $_SESSION['currencyCode'];
+    } else {
+        $currencyFilter = prepareData($_GET['currencyFilter']);
+    }
     
     
     global $userIdResult, $connection, $date, $currentYear, $currentDate;
@@ -59,7 +65,7 @@
         $dif = $total_income + $total_expense;
 
         // create an array following the chart rules
-        array_push($resultArray, round($dif));
+        array_push($resultArray, round($dif, 2));
     }
 
 
@@ -94,8 +100,13 @@
     $lastYear = substr($mysqlResultDates[1], 0, 4); // get only the year from the date
 
     $arrayToEnconde = []; // declaring the final array variable to be json enconded
-    $currentTotal = floatval($_SESSION['initialValue']); // declaring the total value to calculate the acumulated total
 
+    $currentTotal = 0;
+
+    if(strtolower($currencyFilter) == strtolower($_SESSION['defaultCurrency'])) {
+        $currentTotal = $initialValue; // declaring the total value to calculate the acumulated total
+    }
+    
     // creates an array to display at the chart
    for ($year = $firstYear; $year <= $lastYear; $year++) {
         

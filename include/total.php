@@ -19,14 +19,15 @@
                 WHERE user_id = '$userIdResult' AND transactions_type = '$type' AND transactions_currency = '$wallet';
                     GROUP BY month HAVING month = MONTH(CURRENT_DATE());";
         } else { // ALL
-            $mysqli_query = "SELECT SUM(CASE WHEN DATE(transactions_date) <= DATE(CURDATE()) THEN transactions_value ELSE 0 END) AS total FROM transactions 
-                WHERE transactions_currency = '$wallet' AND user_id = '$userIdResult';";
+            $stmt = $connection->prepare("SELECT SUM(CASE WHEN DATE(transactions_date) <= DATE(CURDATE()) THEN transactions_value ELSE 0 END) AS total FROM transactions 
+            WHERE transactions_currency = ? AND user_id = ?;");
         }
         
-
-        $mysqlResult = mysqli_query($connection, $mysqli_query);
-        $rows = mysqli_num_rows($mysqlResult);
-        $result = mysqli_fetch_array($mysqlResult);
+        $stmt->bind_param("ss", $wallet, $userIdResult);
+        $stmt->execute();
+        $get_result = $stmt->get_result();
+        $rows = $get_result->num_rows;
+        $result = $get_result->fetch_array();
         if($rows < 1 || !isset($result['total'])) {
             return 0;
         } else {
