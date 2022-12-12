@@ -6,7 +6,7 @@
  * Removing forbidden char
  */
 
-include('include/connect.inc.php');
+include('connect.inc.php');
 
 function prepareData($data) : string {
     //declaring variables

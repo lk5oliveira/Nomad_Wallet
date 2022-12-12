@@ -5,6 +5,7 @@
     session_start();
     
     include_once('../connect.inc.php');
+    include('../prepare_data.php');
 
     if((time() - $_SESSION['last_attempt']) > 300) { // unlock the login system after 5 minutes for users that tried to login more than 3 times without success.
         $_SESSION['attempts'] = 0; // attempts are used to verify how many login attempts the user had. If more than 5 minutes since the last failed attempt; attempts are reset to zero to let the user try again;
@@ -18,9 +19,8 @@
             exit();
         }
 
-        $usersEmail = mysqli_real_escape_string($connection, $_POST['user']);
+        $usersEmail = prepareData($_POST['user']);
         $userPassword = mysqli_real_escape_string($connection, $_POST['password']);
-        echo $usersEmail;
 
         $_SESSION['return_user'] = $usersEmail; // return the user value to the input value when login failed.
 
