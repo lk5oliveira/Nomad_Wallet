@@ -7,6 +7,12 @@
     */
 
    //Create a variable for the session user ID.
+   if(!isset($_GET['currencyFilter'])) {
+    $currencyFilter = $_SESSION['currencyCode'];
+    } else {
+        $currencyFilter = prepareData($_GET['currencyFilter']);
+    }
+    
     $sessionUser = $_SESSION['email'];
     $userId = mysqli_fetch_array(mysqli_query($connection, "SELECT * FROM users WHERE usersEmail = '$sessionUser';"));
     $userMainCurrency = $currencyFilter;
@@ -17,12 +23,6 @@
     $currentMonth = date('m');
     $currentYear = date('Y');
     $initialValue = floatval($_SESSION['initialValue']);
-
-    if(!isset($_GET['currencyFilter'])) {
-        $currencyFilter = $_SESSION['currencyCode'];
-    } else {
-        $currencyFilter = prepareData($_GET['currencyFilter']);
-    }
     
     
     global $userIdResult, $connection, $date, $currentYear, $currentDate;
