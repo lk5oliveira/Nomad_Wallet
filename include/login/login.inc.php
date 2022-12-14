@@ -59,6 +59,7 @@
                 $queryAlterCountry = "UPDATE `users` SET `usersCurrentCountry` = '$country', `usersCurrentCurrency` = '$currencyCode' WHERE `users`.`usersID` = $_SESSION[userID];";
                 $execAlterCountry = mysqli_query($connection, $queryAlterCountry);
 
+                $connection->close();
                 header('location: ../../panel.php');
                 exit();
 

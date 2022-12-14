@@ -194,6 +194,7 @@ if(isTransfer($id) == 'transfer') { // check if the user is not trying to edit a
 }
 
 
+
 $category = 
 ['Car',
 'Flight',
@@ -321,7 +322,7 @@ if($repeatId > 0){
                             $arr_keys = array_keys($currency_list);
                             $arr_keys_size = sizeof($arr_keys) - 1;
                             for($i = 0;$i <= $arr_keys_size;$i++){
-                                if(strtolower($arr_keys[$i]) == strtolower($_SESSION['defaultCurrency'])) {
+                                if(strtolower($arr_keys[$i]) == strtolower($editResult[8])) {
                                     echo '<option value="' . strtolower($arr_keys[$i]) . '" selected>' . ucwords(strtolower($currency_list[$arr_keys[$i]]['name'])) . '</option>';
                                 } else {
                                 echo '<option value="' . strtolower($arr_keys[$i]) . '">' . ucwords(strtolower($currency_list[$arr_keys[$i]]['name'])) . '</option>';

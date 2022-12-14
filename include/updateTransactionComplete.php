@@ -1,6 +1,7 @@
 <?php
     session_start();
     include('connect.inc.php');
+    include('prepare_data.php');
 
     if(isset($_POST)) {
         if(isset($_POST['complete'])) {
@@ -9,14 +10,13 @@
             $complete = '0';
         }
         
-        $transactionId = $_GET['id'];
-        $userID = $_SESSION['userID'];
+        $transactionId = prepareData($_GET['id']);
+        $userID = prepareData($_SESSION['userID']);
         $previousPage = $_SERVER['HTTP_REFERER'];
 
-
-        $query = "UPDATE transactions SET `transactions_complete` = '$complete' WHERE `user_id` = '$userID' AND `transactions_id` = '$transactionId';";
-
-        $execQuery = mysqli_query($connection, $query);
+        $query = "UPDATE transactions SET `transactions_complete` = ? WHERE `user_id` = ? AND `transactions_id` = ?;";
+        $stmt = $connection->prepare($query);
+        $stmt->bind_param('sss', $complete, $userID, $transactionId);
 
         echo '<script>history.go(-1);</script>';
     } else {

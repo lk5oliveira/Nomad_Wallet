@@ -11,6 +11,7 @@ include("include/connect.inc.php");
 include("include/world-currency.php");
 include("include/check_transaction_is_transfer.php");
 include("include/check_transaction_user.php");
+include("include/prepare_data.php");
 
 /* Exchange rate variables */ 
 $exchangeRates = $_SESSION['exchangeRates'];
@@ -43,8 +44,8 @@ if(isTransfer($transactionId) != 'transfer') { // check if the user is editing t
 
 /* GET THE TRANSFER DATA */
 
-$stmt = $connection->prepare("SELECT * FROM transactions WHERE transactions_id = ?"); // Query to get the transfer id.
-$stmt->bind_param("s", $transactionId);
+$stmt = $connection->prepare("SELECT * FROM transactions WHERE transactions_id = ? AND user_id = ?"); // Query to get the transfer id.
+$stmt->bind_param("ss", $transactionId, $userId);
 $stmt->execute();
 
 $stmt_result = $stmt->get_result();
@@ -52,12 +53,16 @@ $getTransactionData = $stmt_result->fetch_array();
 
 $transferId = $getTransactionData['transactions_transfer_id'];
 
-$stmt = $connection->prepare("SELECT * FROM transactions WHERE transactions_transfer_id = ?");
-$stmt->bind_param("s", $transferId);
+/* GET THE TRANSACTIONS WITH THE RELATED TRANSFER ID */
+
+$stmt = $connection->prepare("SELECT * FROM transactions WHERE transactions_transfer_id = ? AND user_id = ?");
+$stmt->bind_param("ss", $transferId, $userId);
 $stmt->execute();
 
 $stmt_result = $stmt->get_result();
 $transferDataArray= $stmt_result->fetch_all();
+
+/* DECLARING VARIABLES */
 
 $transfer_from_id = $transferDataArray[0][0];
 $transfer_from_value = number_format(abs($transferDataArray[0][4]), 2, ',', '.');
@@ -65,7 +70,7 @@ $transfer_from_currency = $transferDataArray[0][8];
 
 $transfer_to_id = $transferDataArray[1][0];
 $transfer_to_value = number_format($transferDataArray[1][4], 2, ',', '.');
-$transfer_to_currency = $transferDataArray[1][8]; //currency
+$transfer_to_currency = $transferDataArray[1][8]; 
 
 $transfer_rate = number_format($transferDataArray[0][9], 2, ',', '.');
 $transfer_date = $transferDataArray[0][1]; 
@@ -75,13 +80,13 @@ $transfer_country = $transferDataArray[0][7];
 $validationMessage = '';
 
 if (isset($_POST["submit"])) {
-    $from = strtoupper($_POST['from']);
-    $to = strtoupper($_POST['to']);
-    $valueFrom = floatval(str_replace(',','.',str_replace('.', '', $_POST['value-from'])));
-    $valueTo = floatval(str_replace(',','.',str_replace('.', '', $_POST['value-to'])));
-    $exchangeRate = floatval(str_replace(',','.',str_replace('.', '', $_POST['exchange'])));
-    $date = $_POST['date'];
-    $currentCountry = $_POST['country'];
+    $from = prepareData($_POST['from']);
+    $to = prepareData($_POST['to']);
+    $valueFrom = prepareData($_POST['value-from']);
+    $valueTo = prepareData($_POST['value-to']);
+    $exchangeRate = prepareData($_POST['exchange']);
+    $date = prepareData($_POST['date']);
+    $currentCountry = prepareData($_POST['country']);
     $description = "transfer from: " . $from . " to " . $to;
     $userId = $_SESSION['userID'];
     $type = 'transfer';
@@ -127,6 +132,7 @@ if (isset($_POST["submit"])) {
         $connection->close();
     }
 
+    $connection->close();
     header('Location: history.php');
     exit();
 }
@@ -424,7 +430,7 @@ if (isset($_POST["submit"])) {
                         </div>
                         <div class="input" id="value-div">
                             <label for="value">Value</label>
-                            <input name="value-from" type="tel" class="value" id="value-from" data-js="money" value='<?= $transfer_from_value; ?>' onchange="calculateRate('value-from', 'value-to')" required />
+                            <input name="value-from" type="tel" class="value" id="value-from" data-js="money" value='<?= $transfer_from_value; ?>' required />
                             <span class="currency-symbol" id="currency-code-from"></span>
                         </div>
                         <i class="fa-solid fa-right-left" onclick="invertCurrencyButton();"></i>
@@ -458,7 +464,7 @@ if (isset($_POST["submit"])) {
                         <h3>To</h3>
                         <div class="input" id="currency">
                             <label for="currency">Currency</label>
-                            <select name="to" type="text" id="currency-field-to" onchange="updateCurrency('currency-field-to', 'currency-code-to');" required>
+                            <select name="to" type="text" id="currency-field-to" required>
                                 <?php 
                                         for($i = 0;$i <= $arr_keys_size;$i++){
                                             if(strtolower($arr_keys[$i]) == strtolower($transfer_to_currency)) {
@@ -493,8 +499,8 @@ if (isset($_POST["submit"])) {
     let array_rates = <?=  $decoded_rates  ?>;
     let defaultCurrency = '<?= $_SESSION['defaultCurrency'] ?>';
 </script>
-<script src="include/JS/transferPage.js"></script>
 <script src="include/JS/transactionsForm.js"></script>
+<script src="include/JS/transferPage.js"></script>
 
 
 </html>

@@ -112,8 +112,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         $generatedId;
     
     
-       
-    
         /* Check if Repeat is on. If on, then checked the number of times to repeat and repeat peiord.
         If repeat is off, then repeat time is 1.
         A loop will be created in the query, and sum 1 week or 1 month in the current transaction date.
@@ -149,33 +147,30 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
     
         // Get the userID on the current section
         
-        $sessionUser = $_SESSION['email'];
-        $userId = mysqli_fetch_array(mysqli_query($connection, "SELECT usersID FROM users WHERE usersEmail = '$sessionUser';"));
-        $userIdResult = $userId['usersID'];
+        $userIdResult = $_SESSION['userID'];
     
         // Insert the transaction
+
+        $stmt = $connection->prepare("INSERT INTO transactions (transactions_date, transactions_description, transactions_type, transactions_value, transactions_category, transactions_country, transactions_currency, transactions_exchange_rate, transactions_repeat_id, user_id) VALUES (?,?,?,?,?,?,?,?,?,?)");
     
         if($type == 'expense') { // EXPENSE TRANSACTION (the value is passed with PHP as negative)
             
             createIdForMultipleTransfers('transactions_repeat_id');
-            $category = $_POST["category"]; // If type is transfer then this input field is disabled, thus the key will not exist in a global scope - it's not in gloabal scope to avoid errors.
+            $category = prepareData($_POST["category"]); // If type is transfer then this input field is disabled, thus the key will not exist in a global scope - it's not in gloabal scope to avoid errors.
             $generatedId = '';
+            $value = 1 * abs($value);
             for($i = 0; $i < $repeatTime;$i++) {
                 $date = $_POST["date"];
                 if($period == 'monthly') {
                     $date = date('Y-m-d', strtotime("+$i months", strtotime($date)));
     
-                    $sql_insert_sql = "INSERT INTO transactions (transactions_date, transactions_description, transactions_type, transactions_value, transactions_category, transactions_country, transactions_currency, transactions_exchange_rate, transactions_repeat_id, user_id)
-                    VALUES ('$date','$description', '$type', '-$value', '$category', '$country', '$currency', '$rate', '$generatedId', '$userIdResult');";
-            
-                    mysqli_query($connection, $sql_insert_sql);
+                    $stmt->bind_param("ssssssssss", $date, $description, $type, $value, $category, $country, $currency, $rate, $generatedId, $userIdResult);
+                    $stmt->execute();
                 } else {
                     $date = date('Y-m-d', strtotime("+$i weeks", strtotime($date)));
     
-                    $sql_insert_sql = "INSERT INTO transactions (transactions_date, transactions_description, transactions_type, transactions_value, transactions_category, transactions_country, transactions_currency, transactions_exchange_rate, transactions_repeat_id, user_id)
-                    VALUES ('$date','$description', '$type', '-$value', '$category', '$country', '$currency', '$rate', '$generatedId', '$userIdResult');";
-            
-                    mysqli_query($connection, $sql_insert_sql);
+                    $stmt->bind_param("ssssssssss", $date, $description, $type, $value, $category, $country, $currency, $rate, $generatedId, $userIdResult);
+                    $stmt->execute();
                 }
             }
     
@@ -183,23 +178,23 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             createIdForMultipleTransfers('transactions_repeat_id');
             $category = $_POST["category"]; // If type is transfer then this input field is disabled, thus the key will not exist in a global scope - it's not in gloabal scope to avoid errors.
 
+            
             for($i = 0; $i < $repeatTime;$i++) {
                 $date = $_POST["date"];
                 if($period == 'monthly') {
                     $date = date('Y-m-d', strtotime("+$i months", strtotime($date)));
-                    $sql_insert_sql = "INSERT INTO transactions (transactions_date, transactions_description, transactions_type, transactions_value, transactions_category, transactions_country, transactions_currency, transactions_exchange_rate, transactions_repeat_id, user_id)
-                    VALUES ('$date','$description', '$type', '$value', '$category', '$country', '$currency', '$rate', '$generatedId', '$userIdResult');";
-            
-                    mysqli_query($connection, $sql_insert_sql);
+        
+                    $stmt->bind_param("ssssssssss", $date, $description, $type, $value, $category, $country, $currency, $rate, $generatedId, $userIdResult);
+                    $stmt->execute();
                 } else {
                     $date = date('Y-m-d', strtotime("+$i weeks", strtotime($date)));
-                    
-                    $sql_insert_sql = "INSERT INTO transactions (transactions_date, transactions_description, transactions_type, transactions_value, transactions_category, transactions_country, transactions_currency, transactions_exchange_rate, transactions_repeat_id, user_id)
-                    VALUES ('$date','$description', '$type', '$value', '$category', '$country', '$currency', '$rate', '$generatedId', '$userIdResult');";
-            
-                    mysqli_query($connection, $sql_insert_sql);
+
+                    $stmt->bind_param("ssssssssss", $date, $description, $type, $value, $category, $country, $currency, $rate, $generatedId, $userIdResult);
+                    $stmt->execute();
                 }
             }
+
+            $connection->close();
     
         }
         header('location: '. $_SERVER['HTTP_REFERER']);
@@ -367,5 +362,3 @@ function closeForm() {
 
 
 </script>
-
-<script src="include/JS/transactionsForm.js"></script>

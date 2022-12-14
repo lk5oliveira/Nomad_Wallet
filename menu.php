@@ -1,6 +1,6 @@
 
 <?php
-    $userName = $_SESSION['user'];
+    $userName = htmlspecialchars(ucfirst(strtolower($_SESSION['user'])));
     $spacePosition = strpos($userName, ' ', 0);
     
     if($spacePosition > 0) {
@@ -19,7 +19,7 @@
                 <div class="name-status-close" id="name-status">
                     <h6><?= $userName; ?></h6>
                     <a href="accounts.php" id="mode">
-                    <h6 id="current-country"><i class="fa-solid fa-location-dot"></i> <?= $_SESSION['country'] ?></h6>
+                    <h6 id="current-country"><i class="fa-solid fa-location-dot"></i> <?= htmlspecialchars($_SESSION['country']); ?></h6>
                     </a>
                 </div>
             </div>

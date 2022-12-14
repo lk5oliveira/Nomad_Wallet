@@ -1,16 +1,20 @@
 <?php
-        include('include/location-api.php');
+        session_start();
+        include('include/currency_api.php');
         include('include/login/verify_login.inc.php');
         backToIndex();
         include('include/connect.inc.php');
         include('include/world-currency.php');
+        include('include/prepare_data.php');
         
 
 
         $usersEmail = $_SESSION['email'];
-        $queryGetUsers = "SELECT * FROM users WHERE usersEmail = '$usersEmail';";
-        $queryGetUsersExec = mysqli_query($connection, $queryGetUsers);
-        $userInfo = mysqli_fetch_array($queryGetUsersExec);
+        $queryGetUsers = "SELECT * FROM users WHERE usersEmail = ?;";
+        $stmt = $connection->prepare($queryGetUsers);
+        $stmt->bind_param('s', $usersEmail);
+        $stmt->execute();
+        $userInfo = $stmt->get_result()->fetch_array();
 
 
         $validationError = '';
@@ -24,17 +28,17 @@
             if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
                 $usersID = $_SESSION['userID'];
-                $defaultCountry = $_POST['default-country'];
-                $defaultCurrency = $_POST['default-currency'];
-                $currency = $userInfo['usersCurrentCurrency'];
-                $country = $userInfo['usersCurrentCountry'];
-                $initialValue = str_replace(',','.',str_replace('.', '', $_POST['initial-value']));
-                $email = $_POST['email'];
-                $name = $_POST['name'];
+                $defaultCountry = prepareData($_POST['default-country']);
+                $defaultCurrency = prepareData($_POST['default-currency']);
+                $currency =prepareData($userInfo['usersCurrentCurrency']);
+                $country = prepareData($userInfo['usersCurrentCountry']);
+                $initialValue = prepareData($_POST['initial-value']);
+                $email = prepareData($_POST['email']);
+                $name = prepareData($_POST['name']);
 
                 if(isset($_POST['currency']) && isset($_POST['country'])) {
-                    $currency = $_POST['currency'];
-                    $country = $_POST['country'];
+                    $currency = prepareData($_POST['currency']);
+                    $country = prepareData($_POST['country']);
                 }
             
                 if(empty($name)){
@@ -120,7 +124,7 @@
             
                 }
             
-                if($validation == '') { // if $validation is empty then it means there's no validation errors.
+                if($validation == '') { // if $validation is empty then it means there's no errors.
                     $_SESSION['user'] = $name;
                     $_SESSION['email'] = $email;
                     $_SESSION['defaultCurrency'] = $defaultCurrency;
@@ -128,35 +132,34 @@
                     $_SESSION['currencyCode'] = $currency;
                     $_SESSION['currencySymbol'] = $currency_list[$_SESSION['currencyCode']]['symbol'];
                     $_SESSION['initialValue'] = $initialValue;
-            
-                    $query = "UPDATE users SET `usersName` = '$name', `usersEmail` = '$email', 
-                    `usersDefaultCountry` = '$defaultCountry', `usersDefaultCurrency` = '$defaultCurrency', `usersInitialValue` = '$initialValue',
-                    `usersCurrentCountry` = '$country', `usersCurrentCurrency` = '$currency' WHERE `users`.`usersID` = '$usersID';";
 
-                            
-                    $_SESSION['currencyRateHome'] = getCurrencyRate($defaultCurrency, $currency);
-                    $_SESSION['currencyRateTravel'] = getCurrencyRate($currency, $defaultCurrency);
+                    $query = "UPDATE users SET `usersName` = ?, `usersEmail` = ?, `usersDefaultCountry` = ?, `usersDefaultCurrency` = ?,
+                    `usersInitialValue` = ?, `usersCurrentCountry` = ?, `usersCurrentCurrency` = ? WHERE `users`.`usersID` = ?";
 
+                    $stmt = $connection->prepare($query);
+                    $stmt->bind_param("sssssssi", $name, $email, $defaultCountry, $defaultCurrency, $initialValue, $country, $currency, $usersID);
 
+                    
+                    if($stmt->execute()) {
             
-                    if(mysqli_query($connection, $query)) {
-            
-                        $_SESSION['currencyCode'] = $_POST['currency'];
-                        $_SESSION['initialValue'] = str_replace(',','.',str_replace('.', '', $_POST['initial-value']));
-            
+                        $_SESSION['currencyCode'] = $currency;
+                        $_SESSION['country'] = $country;
+                        $_SESSION['initialValue'] = $initialValue;
+                        $_SESSION['exchangeRates'] = GetCurrencyRate($_SESSION['defaultCurrency']);
+                        $connection->close();
+
                         header('location:' . $_SERVER['HTTP_REFERER']);
-            
+
                     } else {
-            
-                        $validation = "there's something wrong here. Contact us.";
-                        //header('location:' . $_SERVER['HTTP_REFERER']);
+
+                        echo 'something is wrong here.';
             
                     }
             
+            
                 } else {
+                    
                     return $validation;
-
-                    //header('location:' . $_SERVER['HTTP_REFERER']);
             
                 }
             }
@@ -354,7 +357,7 @@
                             <select name="default-country" type="text" id="currency-field" required>
                                 <option name='default-country' value="" disabled>select</option>
                                 <?php for($i = 0;$i <= $countryArraySize;$i++) {
-                                    if (ucfirst(strtolower($countryCurrency[$i]['country'])) == $userInfo['usersDefaultCountry']) {
+                                    if (strtolower($countryCurrency[$i]['country']) == strtolower($userInfo['usersDefaultCountry'])) {
                                         echo '<option value="' . ucfirst(strtolower($countryCurrency[$i]['country'])) . '" selected>' . ucfirst(strtolower($countryCurrency[$i]['country'])) . '</option>';
                                     } else {
                                         echo '<option value="' . ucfirst(strtolower($countryCurrency[$i]['country'])) . '">' . ucfirst(strtolower($countryCurrency[$i]['country'])) . '</option>';
@@ -369,7 +372,7 @@
                             <select name="default-currency" type="text" id="currency-field" required>
                                 <option value="" disabled>select</option>
                                 <?php foreach(array_keys($currency_list) as $key) {
-                                    if ($key == strtoupper($userInfo['usersDefaultCurrency'])) {
+                                    if (strtolower($key) == strtolower($userInfo['usersDefaultCurrency'])) {
                                         echo '<option value="' . strtoupper($key) . '" selected>' . strtoupper($key) . '</option>';
                                     } else {
                                         echo '<option value="' . strtoupper($key) . '">' . strtoupper($key) . '</option>';
@@ -393,7 +396,7 @@
                             <select name="country" type="text" id="country-field" required>
                                 <option value="" disabled>select</option>
                                 <?php for($i = 0;$i <= $countryArraySize;$i++) {
-                                    if (ucfirst(strtolower($countryCurrency[$i]['country'])) == $userInfo['usersCurrentCountry']) {
+                                    if (strtolower($countryCurrency[$i]['country']) == strtolower($userInfo['usersCurrentCountry'])) {
                                         echo '<option value="' . ucfirst(strtolower($countryCurrency[$i]['country'])) . '" selected>' . ucfirst(strtolower($countryCurrency[$i]['country'])) . '</option>';
                                     } else {
                                         echo '<option value="' . ucfirst(strtolower($countryCurrency[$i]['country'])) . '">' . ucfirst(strtolower($countryCurrency[$i]['country'])) . '</option>';
@@ -408,7 +411,7 @@
                             <select name="currency" type="text" id="currency-field" required>
                                 <option value="" disabled>select</option>
                                 <?php  foreach(array_keys($currency_list) as $key) {
-                                    if ($key == strtoupper($userInfo['usersCurrentCurrency'])) {
+                                    if (strtolower($key) == strtolower($userInfo['usersCurrentCurrency'])) {
                                         echo '<option value="' . strtoupper($key) . '" selected>' . strtoupper($key) . '</option>';
                                     } else {
                                         echo '<option value="' . strtoupper($key) . '">' . strtoupper($key) . '</option>';

@@ -54,6 +54,8 @@ if($_SESSION['register'] == 'register') {
 
             $_SESSION['exchangeRates'] = GetCurrencyRate($_SESSION['defaultCurrency']);
 
+            $connection->close();
+
             header('location: ../../panel.php');
 
         } else {

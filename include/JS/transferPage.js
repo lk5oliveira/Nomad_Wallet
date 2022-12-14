@@ -139,7 +139,6 @@ function calculateRate(updatedFieldId, fieldToUpdateId) {
         result = updatedValue * rateDataSet; // Return num.
     }
 
-
     fieldToUpdateId.value = maskMoney(maskValueToMoney(result, 2)); // Return string - Update the value of the field with the exchange result.
 }
 

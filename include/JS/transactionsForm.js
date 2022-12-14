@@ -32,6 +32,6 @@
    return new Intl.NumberFormat("pt-BR", {
      style: 'decimal', 
      minimumFractionDigits: 2, 
-     maximumFractionDigits: 3
+     maximumFractionDigits: 2
    }).format(valueAsNumber / 100);
  }
