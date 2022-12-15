@@ -121,10 +121,10 @@
                 $transactionRate = $result['transactions_exchange_rate'];
                 $transactionCurrency = $result['transactions_currency'];
                 $convertedValue = $transactionValue / $transactionRate;
-                
 
                 echo '<tr id="row" style="display: table-row;">
-                <td id="transaction-paid"><form action="include/updateTransactionComplete.php?id='. $transactionsID.'" method="post"> <input type="checkbox" value="1" id="checkbox" name="complete" onChange="this.form.submit()"'; if($result['transactions_complete'] == '1') :  echo 'checked'; endif; echo '></form></td>' .
+                <td id="transaction-paid"><form action="include/updateTransactionComplete.php?id='. $transactionsID .'" method="post">  <input type="hidden" id="transferID" name="transferID" value="' . $result['transactions_transfer_id'] . '"> 
+                <input type="checkbox" value="1" id="checkbox" name="complete" onChange="this.form.submit()"'; if($result['transactions_complete'] == 1) :  echo 'checked'; endif; echo '></form></td>' .
                 '<td id="transactionDate">' . date('d/m/Y', strtotime($result['transactions_date'])) .
                 '<td>' . ucfirst(strtolower($result['transactions_country'])) . '</td>' .
                 '<td id="transaction-type">' . $result['transactions_type'] . '</td>' .
