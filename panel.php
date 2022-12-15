@@ -9,13 +9,21 @@
     include('include/total.php');
     include('include/chart.php');
     include('include/generate_account_list.php');
+    include('include/world-currency.php');
 
     $currencyList = getCurrencyList();
+
     if(empty($currencyList)) {
          $currencyList= array(array($currencyFilter));
     }
 
     $total = getTotal('all', 'all', $currencyFilter); // balance total
+
+    if(empty($_GET)) {
+        $pageCurrency = $_SESSION['currencyCode'];
+    } else {
+        $pageCurrency = $_GET['currencyFilter'];
+    }
 
     if(strtolower($currencyFilter) == strtolower($_SESSION['defaultCurrency'])) {
         $total += floatval($_SESSION['initialValue']); // if balance total is equal to 
@@ -99,7 +107,7 @@
             <div class="balance-container" id="balance">
             <h6 class="grid-title">Balance</h6>
                 <div class="dash-card balance-div" id="balance">
-                    <h5 class="dolar-text"><?= $_SESSION['defaultSymbol']?><?= number_format(($total), 2, ',', '.');?></h5>
+                    <h5 class="dolar-text"><?= $currency_list[$pageCurrency]['symbol'] ?><?= number_format(($total), 2, ',', '.');?></h5>
                 </div>
             </div>
             <div class="month-comparison-container" id="month-comparison">
@@ -107,7 +115,7 @@
                 <div class="month-comparison-div">
                     <div id="current">
                         <h6 class="currently-title"><b>CURRENTLY</b> <br>month result</h6>
-                        <h5 class="result-text"><?= $_SESSION['defaultSymbol'] . number_format($resultArray[$currentMonth],2, ",", ".")?></h5>
+                        <h5 class="result-text"><?= $currency_list[$pageCurrency]['symbol'] . number_format($resultArray[$currentMonth],2, ",", ".")?></h5>
                         <span class="dif-container"><h6 class="dif-text">
                         <?php
                         if ($resultArray[$previousMonth] != 0) {
@@ -144,93 +152,14 @@
             <div class="dash-card chart-div" id="year-chart">
                     <h5>Year overview</h5>
                     <h6><b>This year:</b> 
-                    <?php if ($yearDiff > 0): echo "<span class='signal signal-positive'>+</span>" . " " . $_SESSION['defaultSymbol'] . number_format($yearDiff,2, ",", "."); 
-                    elseif ($yearDiff < 0 ): echo "<span class='signal signal-negative'>-</span>" . " " . $_SESSION['defaultSymbol'] . ltrim(number_format(floatval($yearDiff),2, ",", "."), "-"); 
+                    <?php if ($yearDiff > 0): echo "<span class='signal signal-positive'>+</span>" . " " . $currency_list[$pageCurrency]['symbol'] . number_format($yearDiff,2, ",", "."); 
+                    elseif ($yearDiff < 0 ): echo "<span class='signal signal-negative'>-</span>" . " " . $currency_list[$pageCurrency]['symbol'] . ltrim(number_format(floatval($yearDiff),2, ",", "."), "-"); 
                     else: echo $_SESSION['defaultSymbol'] . $yearDiff; endif?></h6>
                 <div id="growth"></div>
             </div>
 
         </div>
     </div>
-
-<script>
-        let menu = document.getElementById('menu-bar');
-
-
-        //CLOSE MENU WHEN CLICK OUTSIDE THE ELEMENT.
-        document.addEventListener('click', function(event) {
-            if (menu.className === 'menu-slideIn' || menu.className === 'menu-open') {
-                let isClickInsideElement = menu.contains(event.target);
-                if (!isClickInsideElement) {
-                    console.log('outside');
-                    //PHONE SCREEN.
-                    if (window.matchMedia("(max-width: 480px)").matches) {
-                        if (menu.className = 'menu-slideIn') {
-                            menu.classList.remove('menu-slideIn');
-                            menu.classList.add('menu-slideOut');
-                            menu.style.left = -999;
-                            console.log('480px');
-                        }
-                    //TABLET SCREEN.    
-                    } else if ((window.matchMedia("(min-width: 481px)").matches)) {
-                        menu.classList.remove('menu-open');
-                        menu.classList.add('menu-close');
-                        menu.classList.remove('menu.text-display-none');
-                        menu.style = '';
-                        console.log('>481px')
-                    }
-                }
-            }
-        });
-        // UPDATE THE MENU FIELDS WHEN THE DEVICE ORIENTATION CHANGES
-        window.addEventListener("orientationchange", event => {
-            menu.className = '';
-            menu.style = '';
-            console.log('New class name' + menu.className);
-        });
-
-        function slideIn() {
-            // PHONE SCREEN - VERTICAL
-            if (window.matchMedia("(max-width: 480px)").matches) {
-                console.log('480');
-                // CLOSE THE MENU - if open class is on, remove class add close class.
-                if (menu.classList.contains('menu-slideIn')) {
-                    menu.classList.remove('menu-slideIn');
-                    menu.classList.add('menu-slideOut');
-                    menu.style.left = -999;
-                // OPEN THE MENU - if close class is on, remove class and add open class.
-                } else {
-                    menu.classList.remove('menu-slideOut');
-                    menu.classList.add('menu-slideIn');
-                    menu.style.left = 0;
-                }
-            // TABLET AND HORIZONTAL PHONE SCREEN.
-            } else if ((window.matchMedia("(min-width: 481px)").matches)) {
-                //Remover any possible style from vertical mobile device.
-                menu.classList.remove('menu-slideIn');
-                menu.classList.remove('menu-slideOut');
-                menu.style.left = 0;
-                //CLOSE THE MENU - If it's open, remove the open class and add the close class.
-                if (menu.classList.contains('menu-open')) {
-                    menu.classList.remove('menu-open');
-                    menu.classList.add('menu-close');
-                    menu.style.width = '';
-                    /*changeAllMenuText('none');*/
-                } else {
-                //OPEN THE MENU - If it's close, remove the close class and add the open class.
-                    menu.classList.remove('menu-close');
-                    menu.classList.add('menu-open');
-                    menu.style.width = 250;
-                }
-            }
-        }
-
-        function resize() {
-            menu.className = '';
-            menu.style = '';
-        }
-</script>
-
 
 <script>
 /* 
@@ -242,7 +171,8 @@
     $js_array = json_encode($resultArray);
     echo "const dataArray = " . $js_array . "\n";
 ?>
-console.log (dataArray);
+
+let pageCurrency = '<?= $currency_list[$pageCurrency]['symbol']; ?>';
 
 function graph() {
     var options = {
@@ -274,7 +204,7 @@ function graph() {
         },
         yaxis: {
           title: {
-            text: '$'
+            text: pageCurrency
           }
         },
         fill: {
@@ -290,7 +220,7 @@ function graph() {
         tooltip: {
           y: {
             formatter: function (val) {
-              return "$ " + val
+              return pageCurrency + " " + val
             }
           }
         }

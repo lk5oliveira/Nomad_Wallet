@@ -139,6 +139,15 @@
         } else {
             for ($i = $amount; $i > -1;$i--){
                 $result = mysqli_fetch_array($mysqlResult);
+
+                if(!is_null($result['transactions_transfer_id'])) {
+                    $queryTransfer = "SELECT transactions_id FROM transactions WHERE user_id = '$userIdResult' AND transactions_transfer_id = '$result[transactions_transfer_id]' AND transactions_value < 0;";
+                    $queryTransferExec = mysqli_query($connection, $queryTransfer);
+                    if(mysqli_num_rows($queryTransferExec) == 1) {
+                        $originalTranferId = mysqli_fetch_array($queryTransferExec);
+                        $transactionsID = $originalTranferId[0];
+                    }
+                }
                 
                 if(!is_null($result)) {
                     echo 

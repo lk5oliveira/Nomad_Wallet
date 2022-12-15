@@ -19,14 +19,14 @@ function prepareData($data) : string {
     //Keep strings always upper case.
     $upperCaseData = strtoupper($trimmedData);
 
+    //scape string to prevent SQL injection
+    $finalData = mysqli_real_escape_string($connection, $upperCaseData);
+
     //The input fields are money masked, therefore it's necessary to replace the thousand and decimal separator
     if($dataType == 'integer' || $dataType == 'double') {
         //floatval and str_replace
         $upperCaseData = floatval(str_replace(',','.',str_replace('.', '', $upperCaseData)));
     }
-
-    //scape string to prevent SQL injection
-    $finalData = mysqli_real_escape_string($connection, $upperCaseData);
 
     //return STRING
     return $finalData;

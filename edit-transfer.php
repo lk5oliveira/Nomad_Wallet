@@ -82,9 +82,9 @@ $validationMessage = '';
 if (isset($_POST["submit"])) {
     $from = prepareData($_POST['from']);
     $to = prepareData($_POST['to']);
-    $valueFrom = prepareData($_POST['value-from']);
-    $valueTo = prepareData($_POST['value-to']);
-    $exchangeRate = prepareData($_POST['exchange']);
+    $valueFrom = floatval(str_replace(',','.',str_replace('.', '', $_POST['value-from'])));
+    $valueTo = floatval(str_replace(',','.',str_replace('.', '',mysqli_escape_string($connection, $_POST['value-to']))));
+    $exchangeRate = floatval(str_replace(',','.',str_replace('.', '', mysqli_escape_string($connection, $_POST['exchange']))));
     $date = prepareData($_POST['date']);
     $currentCountry = prepareData($_POST['country']);
     $description = "transfer from: " . $from . " to " . $to;
@@ -130,11 +130,15 @@ if (isset($_POST["submit"])) {
 
         $stmt->close();
         $connection->close();
-    }
+        
+        header('Location: history.php');
+
+    } else {
 
     $connection->close();
-    header('Location: history.php');
-    exit();
+
+    }
+
 }
 
 
