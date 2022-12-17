@@ -82,14 +82,13 @@
             echo "error";
         }
 
-        
-
         $mysqlResult = mysqli_query($connection, $select);
+        
         if($amount === "all") {
             while ($result = mysqli_fetch_array($mysqlResult)) { 
                 $transactionsID = $result['transactions_id']; // general id for table
                 $repeatId = $result['transactions_repeat_id'];
-
+                
                 if(!empty($repeatId)) {
                     $query_get_all_repeats = "SELECT transactions_date, transactions_id, transactions_repeat_id FROM transactions WHERE transactions_repeat_id = '$repeatId' AND user_id = $userIdResult ORDER BY transactions_date DESC;";
                     $exec_get_all_repeats = mysqli_query($connection, $query_get_all_repeats);
@@ -137,19 +136,20 @@
                 '<td id="delete">' . "<a id='" . (int)$transactionsID . "'href='#delete-div' onclick='reply_click(this.id);openDeleteAlert();' '>" . '<i class="fa-solid fa-trash-can table-icon"></i>' . "</a>" . '</td></tr>';
             }
         } else {
-            for ($i = $amount; $i > -1;$i--){
+            for ($i = $amount; $i > 0;$i--){
                 $result = mysqli_fetch_array($mysqlResult);
-
-                if(!is_null($result['transactions_transfer_id'])) {
-                    $queryTransfer = "SELECT transactions_id FROM transactions WHERE user_id = '$userIdResult' AND transactions_transfer_id = '$result[transactions_transfer_id]' AND transactions_value < 0;";
-                    $queryTransferExec = mysqli_query($connection, $queryTransfer);
-                    if(mysqli_num_rows($queryTransferExec) == 1) {
-                        $originalTranferId = mysqli_fetch_array($queryTransferExec);
-                        $transactionsID = $originalTranferId[0];
-                    }
-                }
                 
                 if(!is_null($result)) {
+
+                    if(!is_null($result['transactions_transfer_id'])) {
+                        $queryTransfer = "SELECT transactions_id FROM transactions WHERE user_id = '$userIdResult' AND transactions_transfer_id = '$result[transactions_transfer_id]' AND transactions_value < 0;";
+                        $queryTransferExec = mysqli_query($connection, $queryTransfer);
+                        if(mysqli_num_rows($queryTransferExec) == 1) {
+                            $originalTranferId = mysqli_fetch_array($queryTransferExec);
+                            $transactionsID = $originalTranferId[0];
+                        }
+                    }
+
                     echo 
                     '<a class="history-transaction" href="edit.php?edit='. (int)$result['transactions_id'] . '">
                         <p class="description">' . $result['transactions_description'] . '</p>' .

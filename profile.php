@@ -131,7 +131,7 @@
                     $_SESSION['defaultSymbol'] = $currency_list[$_SESSION['defaultCurrency']]['symbol'];
                     $_SESSION['currencyCode'] = $currency;
                     $_SESSION['currencySymbol'] = $currency_list[$_SESSION['currencyCode']]['symbol'];
-                    $_SESSION['initialValue'] = $initialValue;
+                    $_SESSION['initialValue'] = floatval(str_replace(',','.',str_replace('.', '', $initialValue)));
 
                     $query = "UPDATE users SET `usersName` = ?, `usersEmail` = ?, `usersDefaultCountry` = ?, `usersDefaultCurrency` = ?,
                     `usersInitialValue` = ?, `usersCurrentCountry` = ?, `usersCurrentCurrency` = ? WHERE `users`.`usersID` = ?";
@@ -384,7 +384,7 @@
 
                         <div class="input">
                             <label for="initial-value">Initial value</label>
-                            <input type="text" value="<?= number_format($userInfo['usersInitialValue'], 2, ',', '.');?>" name="initial-value" id="initial-value" class="login-input">
+                            <input type="text" data-js="money" value="<?= number_format($userInfo['usersInitialValue'], 2, ',', '.');?>" name="initial-value" id="initial-value" class="login-input">
                         </div>
                 </div>
 
@@ -429,7 +429,6 @@
             </form>
             
         </div>
-        
     </div>
     <script>
         jQuery(function() {
@@ -442,5 +441,6 @@
         });
 
     </script>
+    <script src="include/JS/transactionsForm.js"></script>
 </body>
 </html>

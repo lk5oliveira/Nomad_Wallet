@@ -4,6 +4,7 @@
     include('include/login/verify_login.inc.php');
     include_once ("include/connect.inc.php");
     include_once ("include/prepare_data.php");
+    include("include/gravatar.php");
 
     backToPanel();
     $userName = "";
@@ -61,11 +62,12 @@ if (isset($_POST["submit"])) {
                     $sql_select = $connection->prepare("SELECT * FROM users WHERE usersEmail = ?");
                     $sql_select->bind_param("s", $userEmail);
                     $sql_select->execute();
-                    $sqlResult = $sql_select->get_result()->fetch_all();
+                    $sqlResult = $sql_select->get_result()->fetch_array();
 
                     $_SESSION['userID'] = $sqlResult['usersID']; //Create a session with the user ID.
                     $_SESSION['user'] = $userName;
                     $_SESSION['email'] = $userEmail;
+                    $_SESSION['gravatar'] = get_gravatar($_SESSION['email']);
 
                     header('location: setup.php');
 

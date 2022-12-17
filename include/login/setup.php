@@ -44,6 +44,7 @@ if($_SESSION['register'] == 'register') {
             include_once('../world-currency.php');
     
             $_SESSION['country'] = $country;
+            $_SESSION['defaultCountry'] = $defaultCountry;
             $_SESSION['currencyCode'] = $currencyCode;
             $_SESSION['currencySymbol'] = $currencySymbol;
             $_SESSION['user'] = $userId;

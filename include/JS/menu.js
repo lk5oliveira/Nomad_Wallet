@@ -1,5 +1,6 @@
 let menu = document.getElementById('menu-bar');
 let divStatus = document.getElementById('name-status');
+let profileDiv = document.getElementById('profile');
 
 
 //CLOSE MENU WHEN CLICK OUTSIDE THE ELEMENT.
@@ -42,11 +43,15 @@ function slideIn() {
             menu.classList.remove('menu-slideIn');
             menu.classList.add('menu-slideOut');
             menu.style.left = -999;
+            divStatus.classList.remove('name-status-open');
+            divStatus.classList.add('name-status-close');
         // OPEN THE MENU - if close class is on, remove class and add open class.
         } else {
             menu.classList.remove('menu-slideOut');
             menu.classList.add('menu-slideIn');
             menu.style.left = 0;
+            divStatus.classList.remove('name-status-close');
+            divStatus.classList.add('name-status-open');
         }
     // TABLET AND HORIZONTAL PHONE SCREEN.
     } else if ((window.matchMedia("(min-width: 481px)").matches)) {
@@ -61,6 +66,7 @@ function slideIn() {
             menu.style.width = '';
             divStatus.classList.remove('name-status-open');
             divStatus.classList.add('name-status-close');
+            profileDiv.style.height = '100px';
             /*changeAllMenuText('none');*/
         } else {
         //OPEN THE MENU - If it's close, remove the close class and add the open class.
@@ -69,6 +75,7 @@ function slideIn() {
             menu.style.width = 250;
             divStatus.classList.remove('name-status-close');
             divStatus.classList.add('name-status-open');
+            profileDiv.style.height = '220px';
         }
     }
 }
@@ -76,5 +83,5 @@ function slideIn() {
 function resize() {
     menu.className = '';
     menu.style = '';
-    console.log('New class name' + menu.className);
+    profileDiv.style.height = '';
 }

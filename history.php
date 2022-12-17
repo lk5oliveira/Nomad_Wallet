@@ -244,7 +244,7 @@
         let tr = table.getElementsByTagName('tr');
         let checkbox = document.getElementById("checkbox").checked;
         let allCategories = [];
-        let initialValue = <?= $_SESSION['initialValue']; ?>;
+        let initialValue = <?= floatval(str_replace(',','.',str_replace('.', '', $_SESSION['initialValue']))); ?>;
         totalIncome = 0;
         totalExpense = 0;
         totalResult = 0;

@@ -6,6 +6,7 @@
     if($spacePosition > 0) {
         $userName = substr($userName, 0, $spacePosition);
     }
+
 ?>
 <div class="" id="menu-bar">
             <a href="javascript:void(0);" class="hamburger-icon" onclick="slideIn()">
@@ -14,7 +15,7 @@
             <!--Profile picture and name-->
             <div id="profile">
                 <a href="profile.php" id="picture">
-                    <i id="pic" class="fa-solid fa-user"></i>
+                    <img id="pic" src="<?= $_SESSION['gravatar']; ?>">
                 </a>
                 <div class="name-status-close" id="name-status">
                     <h6><?= $userName; ?></h6>

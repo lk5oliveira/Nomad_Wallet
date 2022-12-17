@@ -417,9 +417,10 @@ form button:hover {
     font-size: 4rem;
     color: #EFEFEF;
     background-color: #F66B0E;
-    padding: 15px 20px;
     border-radius: 100%;
-    margin-bottom: 15px;
+    border: 1px solid white;
+    margin-bottom: 10px;
+    width: 100%;
 }
 
 #mode:link, #mode, #mode:visited {
@@ -586,7 +587,8 @@ form button:hover {
     }
 
     #profile {
-        margin-top: 50px;
+        margin-top: 65px;
+        margin-bottom: 20px;
     }
 
     #pic {
@@ -660,6 +662,7 @@ form button:hover {
     .name-status-open {
         opacity: 1;
         display: block !important;
+        width: auto;
         animation: statusOpen 0.4s ease 0.1s 1 normal backwards;
     }
 
@@ -677,7 +680,8 @@ form button:hover {
 
     .name-status-close {
         opacity: 0;
-        animation: statusClose 0.4s ease 0.1s 1 normal backwards;
+        width: auto;
+        animation: statusClose 0.6s ease 0.1s 1 normal backwards;
     }
 
     @keyframes statusClose {
@@ -687,6 +691,7 @@ form button:hover {
 
         100% {
             opacity: 0;
+            width: 0px;
         }
     }
 
@@ -714,12 +719,15 @@ form button:hover {
     }
 
     #profile {
-        margin-top: 30px;
-        margin-bottom: 20px;
-        padding: 20px 20px 0px 20px;
-        height: 15%;
+        margin-top: 50px;
+        margin-bottom: 0px;
+        padding: 10px 10px 0px 10px;
+        height: 12%;
         display: flex;
         flex-direction: column;
+        transition: 0.5s;
+        gap: 6px;
+        transition: 0.8s;
     }
 
     #pic {
@@ -729,7 +737,7 @@ form button:hover {
     }
     
     #name-status {
-        display: none;
+        display: block;
     }
 
     #menu {

@@ -6,6 +6,7 @@
     
     include_once('../connect.inc.php');
     include('../prepare_data.php');
+    include('../gravatar.php');
 
     if((time() - $_SESSION['last_attempt']) > 300) { // unlock the login system after 5 minutes for users that tried to login more than 3 times without success.
         $_SESSION['attempts'] = 0; // attempts are used to verify how many login attempts the user had. If more than 5 minutes since the last failed attempt; attempts are reset to zero to let the user try again;
@@ -43,6 +44,8 @@
             $_SESSION['user'] = $array['usersName'];
             $_SESSION['userID'] = $array['usersID'];
             $_SESSION['email'] = $array['usersEmail'];
+            $_SESSION['gravatar'] = get_gravatar($_SESSION['email']);
+            $_SESSION['defaultCountry'] = $array['usersDefaultCountry'];
             $_SESSION['defaultCurrency'] = $array['usersDefaultCurrency'];
             $_SESSION['defaultSymbol'] = $currency_list[$_SESSION['defaultCurrency']]['symbol']; // get the currency symbol from a variable available in the world-currency.php
             $_SESSION['initialValue'] = $array['usersInitialValue'];

@@ -12,6 +12,7 @@
     include('include/world-currency.php');
 
     $currencyList = getCurrencyList();
+    $defaultCountry = getDefaultCountry($currencyList);
 
     if(empty($currencyList)) {
          $currencyList= array(array($currencyFilter));
@@ -22,7 +23,7 @@
     if(empty($_GET)) {
         $pageCurrency = $_SESSION['currencyCode'];
     } else {
-        $pageCurrency = $_GET['currencyFilter'];
+        $pageCurrency = strtoupper($_GET['currencyFilter']);
     }
 
     if(strtolower($currencyFilter) == strtolower($_SESSION['defaultCurrency'])) {
@@ -77,6 +78,9 @@
             <form action="" method="get">
                 <select name="currencyFilter" id="currencyFilter" class="filter-currency" onchange="this.form.submit()">
                         <?php
+                          if($defaultCountry == false) {
+                            echo '<option value="' . strtolower($_SESSION['defaultCurrency']) . '">' . strtoupper($_SESSION['defaultCurrency']) . '</option>';
+                          }
                             foreach($currencyList as $key => $currency) {
                                 if(!isset($_GET['currencyFilter'])) {
                                     if(strtolower($currency[0]) == strtolower($_SESSION['currencyCode'])) {
@@ -162,6 +166,7 @@
     </div>
 
 <script>
+    
 /* 
 * VERTICAL GRAPH
 * PHP preparation first
