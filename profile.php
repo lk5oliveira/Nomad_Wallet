@@ -16,10 +16,8 @@
         $stmt->execute();
         $userInfo = $stmt->get_result()->fetch_array();
 
-
         $validationError = '';
 
-        
         function profileValidation() {
 
             global $connection, $countryArraySize, $countryCurrency, $currency_list, $userInfo;
@@ -30,7 +28,7 @@
                 $usersID = $_SESSION['userID'];
                 $defaultCountry = prepareData($_POST['default-country']);
                 $defaultCurrency = prepareData($_POST['default-currency']);
-                $currency =prepareData($userInfo['usersCurrentCurrency']);
+                $currency = prepareData($userInfo['usersCurrentCurrency']);
                 $country = prepareData($userInfo['usersCurrentCountry']);
                 $initialValue = prepareData($_POST['initial-value']);
                 $email = prepareData($_POST['email']);
@@ -125,27 +123,27 @@
                 }
             
                 if($validation == '') { // if $validation is empty then it means there's no errors.
-                    $_SESSION['user'] = $name;
-                    $_SESSION['email'] = $email;
-                    $_SESSION['defaultCurrency'] = $defaultCurrency;
-                    $_SESSION['defaultSymbol'] = $currency_list[$_SESSION['defaultCurrency']]['symbol'];
-                    $_SESSION['currencyCode'] = $currency;
-                    $_SESSION['currencySymbol'] = $currency_list[$_SESSION['currencyCode']]['symbol'];
-                    $_SESSION['initialValue'] = floatval(str_replace(',','.',str_replace('.', '', $initialValue)));
+
 
                     $query = "UPDATE users SET `usersName` = ?, `usersEmail` = ?, `usersDefaultCountry` = ?, `usersDefaultCurrency` = ?,
                     `usersInitialValue` = ?, `usersCurrentCountry` = ?, `usersCurrentCurrency` = ? WHERE `users`.`usersID` = ?";
 
                     $stmt = $connection->prepare($query);
-                    $stmt->bind_param("sssssssi", $name, $email, $defaultCountry, $defaultCurrency, $initialValue, $country, $currency, $usersID);
+                    $stmt->bind_param("ssssssss", $name, $email, $defaultCountry, $defaultCurrency, $initialValue, $country, $currency, $usersID);
 
                     
                     if($stmt->execute()) {
-            
+
+                        $_SESSION['user'] = $name;
+                        $_SESSION['email'] = $email;
+                        $_SESSION['defaultCurrency'] = $defaultCurrency;
+                        $_SESSION['defaultSymbol'] = $currency_list[$_SESSION['defaultCurrency']]['symbol'];
                         $_SESSION['currencyCode'] = $currency;
+                        $_SESSION['currencySymbol'] = $currency_list[$_SESSION['currencyCode']]['symbol'];
                         $_SESSION['country'] = $country;
                         $_SESSION['initialValue'] = $initialValue;
                         $_SESSION['exchangeRates'] = GetCurrencyRate($_SESSION['defaultCurrency']);
+
                         $connection->close();
 
                         header('location:' . $_SERVER['HTTP_REFERER']);

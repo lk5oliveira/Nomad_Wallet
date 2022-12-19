@@ -15,6 +15,7 @@ $category =
 
 include('include/world-currency.php');
 include_once('include/connect.inc.php');
+include_once('include/prepare_data.php');
 
 $validation = true;
 $value = '';
@@ -22,24 +23,19 @@ $description = '';
 /* Exchange rate variables */ 
 $exchangeRates = $_SESSION['exchangeRates'];
 
-
-
-
 if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
-    $date = explode('-', $_POST['date']);
-    $description = $_POST['description'];
+    $date = explode('-', prepareData($_POST['date']));
+    $description = prepareData($_POST['description']);
     $month = $date[1];
     $day = $date[2];
     $year = $date[0];
-    $type = $_POST['type'];
-    $categoryPost = strtoupper($_POST['category']);
-    $currency = strtoupper($_POST['currency']);
-    $country = $_POST['country'];
-    $value = $_POST["value"];
+    $type = prepareData($_POST['type']);
+    $categoryPost = prepareData($_POST['category']);
+    $currency = prepareData($_POST['currency']);
+    $country = prepareData($_POST['country']);
+    $value = prepareData($_POST["value"]);
     $rate = $exchangeRates->$currency;
-
-    echo $rate;
     
     $validationCategory = false;
     $validationCountry = false;
@@ -91,9 +87,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if($validation = true) {
         $date = $_POST["date"]; // transaction date
-        $value = str_replace(',','.',str_replace('.', '', $_POST["value"])); // transaction value
-        $type = $_POST["type"]; // transfer, income, expense
-        $category = '';
         
         $country = strtoupper($_POST['country']);
         $currency = strtoupper($_POST['currency']);
@@ -158,19 +151,26 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             createIdForMultipleTransfers('transactions_repeat_id');
             $category = prepareData($_POST["category"]); // If type is transfer then this input field is disabled, thus the key will not exist in a global scope - it's not in gloabal scope to avoid errors.
             $generatedId = '';
-            $value = 1 * abs($value);
+            $value = -1 * abs($value);
+            
             for($i = 0; $i < $repeatTime;$i++) {
+
                 $date = $_POST["date"];
+
                 if($period == 'monthly') {
+
                     $date = date('Y-m-d', strtotime("+$i months", strtotime($date)));
     
-                    $stmt->bind_param("ssssssssss", $date, $description, $type, $value, $category, $country, $currency, $rate, $generatedId, $userIdResult);
+                    $stmt->bind_param("sssdssssss", $date, $description, $type, $value, $category, $country, $currency, $rate, $generatedId, $userIdResult);
                     $stmt->execute();
+
                 } else {
+
                     $date = date('Y-m-d', strtotime("+$i weeks", strtotime($date)));
     
-                    $stmt->bind_param("ssssssssss", $date, $description, $type, $value, $category, $country, $currency, $rate, $generatedId, $userIdResult);
+                    $stmt->bind_param("sssdssssss", $date, $description, $type, $value, $category, $country, $currency, $rate, $generatedId, $userIdResult);
                     $stmt->execute();
+
                 }
             }
     

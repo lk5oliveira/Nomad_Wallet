@@ -199,7 +199,7 @@
     let year = document.getElementById("yearFilter");
     let currency = document.getElementById("currencyFilter");
     let currenciesArray = <?= $currenciesArray; ?>;
-    console.log(currenciesArray);
+    let defaultCurrency = '<?= $_SESSION['defaultCurrency']; ?>';
 
     function updateCurrencySymbol() {
         let balanceCurrency;
@@ -244,12 +244,14 @@
         let tr = table.getElementsByTagName('tr');
         let checkbox = document.getElementById("checkbox").checked;
         let allCategories = [];
-        let initialValue = <?= floatval(str_replace(',','.',str_replace('.', '', $_SESSION['initialValue']))); ?>;
-        totalIncome = 0;
-        totalExpense = 0;
-        totalResult = 0;
-        currentTotal = 0 + initialValue;
-        categoriesTotal = [];
+        let initialValue = <?= floatval($_SESSION['initialValue']); ?>;
+        let totalIncome = 0;
+        let totalExpense = 0;
+        let totalResult = 0;
+        let currentTotal = 0;
+        let categoriesTotal = [];
+        const todaysDate = new Date();
+        console.log(initialValue);
 
         // year filter variables
         let year = document.getElementById("yearFilter");
@@ -264,6 +266,13 @@
         currencyFilter = currency.value;
 
 
+        if(currencyFilter.toUpperCase() == defaultCurrency.toUpperCase() || currencyFilter.toUpperCase() == 'ALL') { // If the currency filter is equal to the user default currency, then sum with the inital value
+
+            currentTotal += initialValue;
+
+        }
+
+
         // Looping over the table rows.
         for (i =1; i < tr.length; i++) {
             let value;
@@ -275,9 +284,10 @@
             let checkbox = tr[i].getElementsByTagName('td')[0]; // checkbox
             let description = tr[i].getElementsByTagName("td")[6];
 
-            if(currencyFilter == 'all') {
+            if(currencyFilter.toUpperCase() == 'ALL') {
                 value = parseFloat(tr[i].getElementsByTagName('td')[6].dataset['converted'].replaceAll(',','')); // Get the converted value to defatul currency of each row
                 valueTxt = parseFloat(value.toFixed(2));
+
             } else {
                 value = tr[i].getElementsByTagName('td')[6];
                 valueTxt = parseFloat(value.innerHTML);
@@ -289,12 +299,16 @@
                 let [day, month, year] = dateValue.split("/"); // split the cell date into variables.
                 let currencyValue = currency.textContent || currency.innerText;
                 let checkboxValue = checkbox.getElementsByTagName('input')[0].checked;
- 
-
-                if(monthFilter == '00' || month <= monthFilter) {
-                    if (yearFilter == '00' || year <= yearFilter) {
-                        currentTotal += valueTxt;
-                    }
+                let prepareDateFormat = month + '-' + day + '-' + year;
+                let dateObject = new Date(prepareDateFormat);
+                console.log(dateObject);
+                console.log(dateObject <= todaysDate);
+                if(dateObject <= todaysDate && currencyValue.toUpperCase() == currencyFilter.toUpperCase()) {
+                    
+                    
+                    currentTotal += valueTxt;
+                    console.log(currentTotal);
+                    
                 }
                 
             }
