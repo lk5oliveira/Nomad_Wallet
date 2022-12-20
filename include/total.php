@@ -152,7 +152,7 @@
 
                     echo 
                     '<a class="history-transaction" href="edit.php?edit='. (int)$result['transactions_id'] . '">
-                        <p class="description">' . $result['transactions_description'] . '</p>' .
+                        <p class="description">' . htmlspecialchars($result['transactions_description']) . '</p>' .
                         '<p class="value">' . $currency_list[strtoupper($result['transactions_currency'])]['symbol'] . $result['transactions_value'] . '</p>' .
                         '<p class="date">' . date('F j, Y', strtotime($result['transactions_date'])) . '</p>' .
                         '<p class="currency">' . $result['transactions_currency'] . '</p>' . 
