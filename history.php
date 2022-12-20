@@ -159,7 +159,7 @@
                 </select>
 
             </div>
-            <input type="text" class="search-input" id="search" onkeyup="search()" placeholder="Search for description names...">
+            <input type="text" class="search-input" id="search" placeholder="Search for description names...">
             </div>
 
             
@@ -189,12 +189,12 @@
     
 <script>
     // declaring global variables
-    var totalIncome;
-    var totalExpense;
-    var totalResult;
+    var totalIncome = 0;
+    var totalExpense = 0;
+    var totalResult = 0;
+    var currentTotal = 0;
     var uniqueCategories = [];
     var categoriesTotal = [];
-    var currentTotal = 0;
     let month = document.getElementById("monthFilter");
     let year = document.getElementById("yearFilter");
     let currency = document.getElementById("currencyFilter");
@@ -219,7 +219,7 @@
         /**
          * Function activated when the page loads and the currency filter is not equal to ALL
          * This function works when the user selects to view the transaction history from a currency from the accounts page
-         * RETURN VOID
+         * @return void
          */
         if(window.location.pathname == '/Nomad_Wallet/history.php') { // End of function if the user is acessing the page without any parameters
             return;
@@ -237,21 +237,22 @@
     // Get the total income and expense and calculates the result to display at the result div and updates the period text with the choosen month and year
     function periodTotal() { 
         // Declare variables
-        
+        var value;
+        var valueTxt;
         let transactionValue = document.getElementById('transaction-value');
         let transactionType = document.getElementById('transaction-type');
         let table = document.getElementById('table');
         let tr = table.getElementsByTagName('tr');
         let checkbox = document.getElementById("checkbox").checked;
-        let allCategories = [];
+        var allCategories = [];
         let initialValue = <?= floatval($_SESSION['initialValue']); ?>;
-        let totalIncome = 0;
-        let totalExpense = 0;
-        let totalResult = 0;
-        let currentTotal = 0;
-        let categoriesTotal = [];
         const todaysDate = new Date();
-        console.log(initialValue);
+        currentTotal = 0;
+        totalIncome = 0;
+        totalExpense = 0;
+        totalResult = 0;
+        categoriesTotal = [];
+
 
         // year filter variables
         let year = document.getElementById("yearFilter");
@@ -275,8 +276,7 @@
 
         // Looping over the table rows.
         for (i =1; i < tr.length; i++) {
-            let value;
-            let valueTxt;
+
             let date = tr[i].getElementsByTagName('td')[1]; // Get the date of each row
             let type = tr[i].getElementsByTagName('td')[3]; // Get the type of each row
             let currency = tr[i].getElementsByTagName("td")[6].getElementsByTagName("small")[0]; // Get the currency of each row
@@ -285,30 +285,30 @@
             let description = tr[i].getElementsByTagName("td")[6];
 
             if(currencyFilter.toUpperCase() == 'ALL') {
+
                 value = parseFloat(tr[i].getElementsByTagName('td')[6].dataset['converted'].replaceAll(',','')); // Get the converted value to defatul currency of each row
                 valueTxt = parseFloat(value.toFixed(2));
 
             } else {
+
                 value = tr[i].getElementsByTagName('td')[6];
                 valueTxt = parseFloat(value.innerHTML);
+
             }
             
 
             if(date) {
+
                 let dateValue = date.innerHTML || date.innerText;
-                let [day, month, year] = dateValue.split("/"); // split the cell date into variables.
-                let currencyValue = currency.textContent || currency.innerText;
-                let checkboxValue = checkbox.getElementsByTagName('input')[0].checked;
+                let [day, month, year] = dateValue.split("/");
                 let prepareDateFormat = month + '-' + day + '-' + year;
                 let dateObject = new Date(prepareDateFormat);
-                console.log(dateObject);
-                console.log(dateObject <= todaysDate);
-                if(dateObject <= todaysDate && currencyValue.toUpperCase() == currencyFilter.toUpperCase()) {
-                    
-                    
+                let currencyValue = currency.textContent || currency.innerText;
+
+                if(dateObject <= todaysDate && currencyValue.toUpperCase() == currencyFilter.toUpperCase() || currencyFilter.toUpperCase() == 'ALL') {
+
                     currentTotal += valueTxt;
-                    console.log(currentTotal);
-                    
+
                 }
                 
             }
@@ -316,10 +316,13 @@
             if(type && getComputedStyle(tr[i]).display == 'table-row') { //Get the HTML content
                 typeTxt = type.textContent || type.innerText;
                 totalResult += valueTxt;
+                
+                if(typeTxt.toUpperCase() == 'INCOME') { // Sum the total for income rows
 
-                if(typeTxt == 'income') { // Sum the total for income rows
                     totalIncome += valueTxt;
-                } else if (typeTxt == 'expense') { // Sum the total for expense rows
+                    
+                } else if (typeTxt.toUpperCase() == 'EXPENSE') { // Sum the total for expense rows
+
                     totalExpense += valueTxt;
                     allCategories.push(categoryColumn.innerHTML);
                     
@@ -331,24 +334,44 @@
 
         function sumCategoriesValues(category) {
             let categoryTotal = 0
-            for (i =0; i < tr.length; i++) {
-                type = tr[i].getElementsByTagName('td')[3]; // Get the type of each row
-                value = tr[i].getElementsByTagName('td')[6]; // Get the value of each row
-                categoryColumn = tr[i].getElementsByTagName('td')[4]; // Get the value of each row
-                
-                if(type && getComputedStyle(tr[i]).display == 'table-row') { //Get the HTML content
-                typeTxt = type.textContent || type.innerText;
-                valueTxt = parseFloat(value.innerHTML);
+            let tr = table.getElementsByTagName('tr');
 
-                    if(typeTxt == 'expense' && categoryColumn.innerHTML == category) { // Sum the total for income rows
-                        categoryTotal += Math.abs(valueTxt); // Generate the total value for each category
+            for (i = 1; i < tr.length; i++) {
+
+                let type = tr[i].getElementsByTagName('td')[3]; // Get the type of each row
+                let value = tr[i].getElementsByTagName("td")[6]; // Get the currency of each row
+                let categoryColumn = tr[i].getElementsByTagName('td')[4]; // Get the value of each row
+                
+                if(getComputedStyle(tr[i]).display == 'table-row') { //Get the HTML content
+                    
+                    let typeTxt = type.innerHTML;
+                    console.log(valueTxt);
+
+                    if(currencyFilter.toUpperCase() == 'ALL') {
+
+                        value = parseFloat(tr[i].getElementsByTagName('td')[6].dataset['converted'].replaceAll(',','')); // Get the converted value to defatul currency of each row
+                        valueTxt = parseFloat(value.toFixed(2));
+
+                    } else {
+
+                        value = tr[i].getElementsByTagName('td')[6];
+                        valueTxt = parseFloat(value.innerHTML);
+
                     }
-                }   
+
+                    if(typeTxt.toUpperCase() == 'EXPENSE' && categoryColumn.innerHTML.toUpperCase() == category.toUpperCase()) { // Sum the total for income rows
+                        categoryTotal += Math.abs(valueTxt); // Generate the total value for each category
+                        console.log('total : ' + categoryColumn.innerHTML + categoryTotal);
+
+                    }
+                }  
             }
-            categoriesTotal.push(categoryTotal); // push to an array
+            
+            categoriesTotal.push(categoryTotal);
         }
 
-        uniqueCategories.forEach(sumCategoriesValues);
+        console.log(categoriesTotal);
+        uniqueCategories.forEach(element => sumCategoriesValues(element));
 
         // display the choosen month and year text
         // declaing variables
@@ -372,8 +395,6 @@
         return totalExpense, totalIncome, result, categoriesTotal;
 
     }
-
-    
     
     let currentCountry = '<?= ucfirst($_SESSION['country']) ?>';
    
@@ -456,7 +477,6 @@
                     
                 }
 
-
                 // check if the row is true (show) or false (hide).
                 if (displayRow == true) {
                     tr[i].style.display = "table-row";
@@ -469,10 +489,9 @@
         }
     }
 
-
     function search() {
         // Declare variables
-        var input, filter, table, tr, td, i, txtValue;
+        let input, filter, table, tr, td, i, txtValue;
         input = document.getElementById("search");
         filter = input.value.toUpperCase();
         table = document.getElementById("table");
@@ -481,11 +500,12 @@
         // Loop through all table rows, and hide those who don't match the search query
         if(filter == '') {
             applyFilter();
+            updateChart();
             return;
         }
 
         for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[6];
+            td = tr[i].getElementsByTagName("td")[5];
             if (td) {
             txtValue = td.textContent || td.innerText;
             if (txtValue.toUpperCase().indexOf(filter) > -1) {
@@ -496,82 +516,91 @@
             }
         }
 
-        periodTotal();
         updateChart();
         
     }
+
+    let searchBar = document.getElementById("search");
+
+    searchBar.addEventListener(
+        "input", (e) => {
+                search();
+
+        },
+    false
+    )
      
-        /* HORIZONTAL BARS INCOME/EXPENSE RESULT CHART */
-        var options = {
-          series: [{
-          data: [totalIncome, totalExpense],
-          
-        }],
-          chart: {
-          type: 'bar',
-        },
-        plotOptions: {
-          bar: {
-            borderRadius: 4,
-            horizontal: true,
-          }
-        },
-        dataLabels: {
-          enabled: false
-        },
-        xaxis: {
-          categories: ['Income', 'Expense',],
+    /* HORIZONTAL BARS INCOME/EXPENSE RESULT CHART */
+    var options = {
+        series: [{
+        data: [totalIncome, totalExpense],
+        
+    }],
+        chart: {
+        type: 'bar',
+    },
+    plotOptions: {
+        bar: {
+        borderRadius: 4,
+        horizontal: true,
         }
-        };
+    },
+    dataLabels: {
+        enabled: false
+    },
+    xaxis: {
+        categories: ['Income', 'Expense',],
+    }
+    };
 
-        var chart = new ApexCharts(document.querySelector("#chart-income-expense"), options);
-        chart.render();
+    var chart = new ApexCharts(document.querySelector("#chart-income-expense"), options);
+    chart.render();
 
 
-        /* DONUT CATEGORY CHART */
-        var options = {
-          series: categoriesTotal,
-          labels: uniqueCategories,
-          chart: {
-          type: 'donut',
-          height: 170,
-        },
-        responsive: [{
-          options: {
-            legend: {
-              position: 'bottom'
-            }
-          }
-        }],
-        noData: {
-            text: 'No expense',
-            align: 'center',
-            verticalAlign: 'middle',
-            offsetX: 0,
-            offsetY: 0,
-            style: {
-                color: '#b6b6b6',
-                fontFamily: 'Poppins',
-                fontSize: '2em'
-            }
-            },
+    /* DONUT CATEGORY CHART */
+    var options = {
+        series: categoriesTotal,
+        labels: uniqueCategories,
+        chart: {
+        type: 'donut',
+        height: 170,
+    },
+    responsive: [{
+        options: {
         legend: {
-            show: true,
-            horizontalAlign: 'left'
+            position: 'bottom'
         }
-        };
+        }
+    }],
+    noData: {
+        text: 'No expense',
+        align: 'center',
+        verticalAlign: 'middle',
+        offsetX: 0,
+        offsetY: 0,
+        style: {
+            color: '#b6b6b6',
+            fontFamily: 'Poppins',
+            fontSize: '2em'
+        }
+        },
+    legend: {
+        show: true,
+        horizontalAlign: 'left'
+    }
+    };
 
-        var donut = new ApexCharts(document.querySelector("#chart-categories"), options);
-        donut.render();
+    var donut = new ApexCharts(document.querySelector("#chart-categories"), options);
+    donut.render();
 
 
-        function updateChart() {
-        periodTotal(); 
-        chart.updateSeries(chart.updateSeries([{data: [totalIncome, totalExpense]}]));
-        donut.updateOptions({
-            labels: uniqueCategories,
-            series: categoriesTotal,
-        });
+    function updateChart() {
+    periodTotal(); 
+    chart.updateSeries(chart.updateSeries([{data: [totalIncome, totalExpense]}]));
+    donut.updateOptions({
+        labels: uniqueCategories,
+        series: categoriesTotal,
+    });
     }
 
 
@@ -583,9 +612,9 @@
     setTimeout(function () {
         showAllDates();
         applyFilter();
-        periodTotal();
         updateChart();
     }, 1000)
+console.log(categoriesTotal);
 </script>
 
 </body>

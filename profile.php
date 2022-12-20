@@ -333,7 +333,7 @@
                     <hr/>
                         <div class="input <?php if(str_contains($validationError, 'name')) : ?>validation-error<?php endif ?>">
                             <label for="name">Name</label>
-                            <input name='name' type="text" value="<?=$userInfo['usersName']?>">
+                            <input name='name' type="text" value="<?=htmlspecialchars($userInfo['usersName'])?>">
                         </div>
 
                         <div class="input <?php if(str_contains($validationError, 'email')) : ?>validation-error<?php endif ?>">

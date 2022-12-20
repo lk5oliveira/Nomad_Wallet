@@ -339,30 +339,25 @@ if($repeatId > 0){
 
                     <div class="input">
                         <label for="description">Description</label>
-                        <input type="text" name="description" id="description" value="<?= $editResult[2]; ?>" required>
+                        <input type="text" name="description" id="description" value="<?= htmlspecialchars($editResult[2]); ?>" required>
                     </div>
 
                     <div class="input">
                         <label for="type">Type</label>
-                        <select type="text" name="type" id="type" onchange="transferCategory();" required>
-                            <?php if($editResult[3] == 'transfer') : ?>
-                                <option value="transfer" selected>Transfer</option> 
-                            <?php elseif ($editResult[3] == 'income'): ?>
+                        <select type="text" name="type" id="type" required>
+                            <?php if ($editResult[3] == 'income'): ?>
                                 <option value="income" selected>Income</option>
                                 <option value="expense">Expense</option> 
-                            <?php elseif ($editResult[3] == 'expense') : ?>
+                            <?php else : ?>
                                 <option value="income">Income</option>
                                 <option value="expense" selected>Expense</option>
-                            <?php else : ?>
-                                <option value="income" selected>Income</option>
-                                <option value="expense">Expense</option>   
-                            <?php endif ?>
+                            <?php endif; ?>
                         </select>
                     </div>
 
                     <div class="input">
                         <label for="type">Category</label>
-                        <select type="text" name="category" id="category" onchange="transferOnChange();" required>
+                        <select type="text" name="category" id="category" required>
                             <?php
                             foreach($category as $item) {
                                 if(strtoupper($item) == strtoupper($transactionCategory)){
@@ -372,7 +367,6 @@ if($repeatId > 0){
                                 }
                             }
                             ?>
-                            <option value="transfer" id="transferCat" style="display: none;">Transfer</option>
                         </select>
                     </div>
 
