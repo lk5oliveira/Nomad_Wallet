@@ -41,6 +41,9 @@
 <body>
     <main>
         <div class="container">
+            <div class="now-logo">
+                    <img src="img/logo.webp" alt="nomad-wallet-logo" class="img-logo">
+                </div>
             <div class="signup-form">
                 <div id="register-signup">
                     <p id="sign-up">Sing up</p>

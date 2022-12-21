@@ -12,6 +12,9 @@
             <a href="javascript:void(0);" class="hamburger-icon" onclick="slideIn()">
                 <i class="fa fa-bars"></i>
             </a>
+            <div class="now-logo">
+                    <img src="img/logo.webp" alt="nomad-wallet-logo" class="img-logo">
+                </div>
             <!--Profile picture and name-->
             <div id="profile">
                 <a href="profile.php" id="picture">

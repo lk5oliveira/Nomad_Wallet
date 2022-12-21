@@ -400,9 +400,9 @@ form button:hover {
 }
 
 #profile {
-    height: 30%;
+    height: auto;
     padding-top: 20px;
-    margin-top: 30px;
+    margin: 0px 0px 30px 0px;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -532,6 +532,21 @@ form button:hover {
     display: none;
 }
 
+.now-logo {
+    height: 10%;
+    max-width: 90%;
+    display: flex;
+    align-items: flex-end;
+    margin-right: 10px;
+    margin-top: 10px;
+}
+
+.img-logo {
+    width: 100px;
+    max-width: 100%;
+    margin-top: 5px;
+}
+
 /* RESPONSIVE MENU */
 
 @media screen and (max-width: 480px) {
@@ -587,7 +602,7 @@ form button:hover {
     }
 
     #profile {
-        margin-top: 65px;
+        margin-top: 10px;
         margin-bottom: 20px;
     }
 
@@ -719,7 +734,6 @@ form button:hover {
     }
 
     #profile {
-        margin-top: 50px;
         margin-bottom: 0px;
         padding: 10px 10px 0px 10px;
         height: 12%;
@@ -761,6 +775,13 @@ form button:hover {
     #menu-option {
         height: 45px;
         margin-bottom: 0px;
+    }
+
+    .now-logo {
+        max-height: 200px;
+        height: auto;
+        margin-top: 40px;
+        margin-right: 0px;
     }
 
     #exit-container {
