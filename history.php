@@ -244,7 +244,6 @@
         let transactionType = document.getElementById('transaction-type');
         let table = document.getElementById('table');
         let tr = table.getElementsByTagName('tr');
-        let checkbox = document.getElementById("checkbox").checked;
         var allCategories = [];
         let initialValue = <?= floatval($_SESSION['initialValue']); ?>;
         const todaysDate = new Date();
