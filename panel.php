@@ -34,6 +34,8 @@
         $yearDiff = '';
     }
 
+    $currentMonth -= 1;
+
     ?>
 
 
@@ -254,7 +256,6 @@ graph();
 ?>
 
 const currentYearOverViewData = yearOverViewArray[2022];
-console.log(currentYearOverViewData);
 
 
 var options = {

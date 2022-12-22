@@ -22,6 +22,9 @@
 
     $currentMonth = date('m');
     $currentYear = date('Y');
+    $previousYear = $currentYear - 1;
+    $currentMonth = ltrim($currentMonth, "0") -1;
+    $previousMonth = $currentMonth - 1;
     $initialValue = floatval($_SESSION['initialValue']);
     
     
@@ -68,7 +71,6 @@
         array_push($resultArray, round($dif, 2));
     }
 
-
     // ------------- YEAR OVERVIEW CHART -----------------
 
     // get the result for each month where is not null.
@@ -79,8 +81,6 @@
             WHERE user_id = '$userIdResult' AND transactions_currency = '$userMainCurrency'
             GROUP BY period;";
     $mysqlExec = mysqli_query($connection, $query_get_month_income);
-    
-    //print_r(mysqli_fetch_all($mysqlExec));
 
     // Create an array separating year and month.  
     while($mysqlResultIncome = mysqli_fetch_array($mysqlExec)) { 
@@ -129,9 +129,6 @@
         }
     }
     
-    $previousYear = $currentYear - 1;
-    $currentMonth = ltrim($currentMonth, "0") -1;
-    $previousMonth = $currentMonth - 1;
 
     if(empty($arrayToEnconde[$previousYear])) {
         $previousYearResult = 0;
@@ -144,7 +141,16 @@
         $yearDiff = $currentResult + $previousYearResult;
     }
 
-    
+    if ($mysqlResultDates[0] == null && $mysqlResultDates[0] == null) {
+
+        $arrayToEnconde[$currentYear] = array();
+        
+        for($i = 0; $i < 12; $i++) {
+            array_push($arrayToEnconde[$currentYear], $initialValue);
+        }
+
+        return;
+    }
 
    //var_dump($arrayToEnconde);
 ?>

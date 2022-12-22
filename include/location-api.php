@@ -30,7 +30,7 @@
     $ch = curl_init();
 
     // Set the URL that you want to GET by using the CURLOPT_URL option.
-    curl_setopt($ch, CURLOPT_URL, 'https://ipgeolocation.abstractapi.com/v1/?api_key=f82260fc2609440f89135fd8dd8f020b&ip_address='. $ip); // replace the url for this one when deployed: 'https://ipgeolocation.abstractapi.com/v1/?api_key=f82260fc2609440f89135fd8dd8f020b&ip_address='. $ip
+    curl_setopt($ch, CURLOPT_URL, 'https://ipgeolocation.abstractapi.com/v1/?api_key=f82260fc2609440f89135fd8dd8f020b'); // replace the url for this one when deployed: 'https://ipgeolocation.abstractapi.com/v1/?api_key=f82260fc2609440f89135fd8dd8f020b&ip_address='. $ip
 
     // Set CURLOPT_RETURNTRANSFER so that the content is returned as a variable.
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
