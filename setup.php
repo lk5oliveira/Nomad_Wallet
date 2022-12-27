@@ -142,6 +142,9 @@
 <body>
     <main>
         <div class="container">
+          <div class="now-logo">
+            <img src="img/logo.webp" alt="nomad-wallet-logo" class="img-logo">
+          </div>
             <div class="signup-form">
 
             <h3 style="text-align:center;margin-bottom: 2rem;">Getting start</h3>

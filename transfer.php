@@ -314,7 +314,7 @@ if (isset($_POST["submit"])) {
 
 </style>
 
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -327,13 +327,11 @@ if (isset($_POST["submit"])) {
     <link rel="stylesheet" href="https://fonts.sandbox.google.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="css/style.css">
-    <script src="include/JS/menu.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <script src="https://kit.fontawesome.com/a440aae6fe.js" crossorigin="anonymous"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js" type="text/javascript"></script>
     <title>Transfering</title>
 </head>
-<body>
+<body onresize="resize();">
     
     <div id="main-container">
 
@@ -444,8 +442,9 @@ if (isset($_POST["submit"])) {
         let array_rates = <?=  $decoded_rates  ?>;
         let defaultCurrency = '<?= $_SESSION['defaultCurrency'] ?>';
     </script>
-    <script src="include/JS/transactionsForm.js"></script>
-    <script src="include/JS/transferPage.js"></script>
+    <script src="include/js/transactionsForm.js"></script>
+    <script src="include/js/transferPage.js"></script>
+    <script src="include/js/menu.js"></script>
 </body>
 
 

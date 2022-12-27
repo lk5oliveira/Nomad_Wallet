@@ -8,6 +8,7 @@
     }
 
 ?>
+
 <div class="" id="menu-bar">
             <a href="javascript:void(0);" class="hamburger-icon" onclick="slideIn()">
                 <i class="fa fa-bars"></i>

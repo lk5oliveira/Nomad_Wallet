@@ -12,6 +12,7 @@
     backToIndex();
 
 ?>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 
@@ -28,8 +29,8 @@
     <link rel="stylesheet" href="css/history.css">
     <script src="include/js/apexcharts/apexcharts.js"></script>
     <script src="https://kit.fontawesome.com/a440aae6fe.js" crossorigin="anonymous"></script>
-    <script src="include/JS/menu.js" defer></script>
-    <script src="include/JS/transactions-button.js" defer></script>
+    <script src="include/js/menu.js" defer></script>
+    <script src="include//transactions-button.js" defer></script>
     <title>Transactions</title>
 </head>
 <body>

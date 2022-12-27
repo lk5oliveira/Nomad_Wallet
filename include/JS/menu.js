@@ -14,7 +14,7 @@ document.addEventListener('click', function(event) {
                 if (menu.className = 'menu-slideIn') {
                     menu.classList.remove('menu-slideIn');
                     menu.classList.add('menu-slideOut');
-                    menu.style.left = -999;
+                    menu.style.left = '-999px';
                     console.log('480px');
                 }
             //TABLET SCREEN.    
@@ -37,19 +37,18 @@ window.addEventListener("orientationchange", event => {
 function slideIn() {
     // PHONE SCREEN - VERTICAL
     if (window.matchMedia("(max-width: 480px)").matches) {
-        console.log('480');
         // CLOSE THE MENU - if open class is on, remove class add close class.
         if (menu.classList.contains('menu-slideIn')) {
             menu.classList.remove('menu-slideIn');
             menu.classList.add('menu-slideOut');
-            menu.style.left = -999;
+            menu.style.left = '-999px';
             divStatus.classList.remove('name-status-open');
             divStatus.classList.add('name-status-close');
         // OPEN THE MENU - if close class is on, remove class and add open class.
         } else {
             menu.classList.remove('menu-slideOut');
             menu.classList.add('menu-slideIn');
-            menu.style.left = 0;
+            menu.style.left = '0px';
             divStatus.classList.remove('name-status-close');
             divStatus.classList.add('name-status-open');
         }
@@ -58,7 +57,7 @@ function slideIn() {
         //Remove any possible style from vertical mobile device.
         menu.classList.remove('menu-slideIn');
         menu.classList.remove('menu-slideOut');
-        menu.style.left = 0;
+        menu.style.left = '0px';
         //CLOSE THE MENU - If it's open, remove the open class and add the close class.
         if (menu.classList.contains('menu-open')) {
             menu.classList.remove('menu-open');
@@ -72,7 +71,8 @@ function slideIn() {
         //OPEN THE MENU - If it's close, remove the close class and add the open class.
             menu.classList.remove('menu-close');
             menu.classList.add('menu-open');
-            menu.style.width = 250;
+            console.log('oi');
+            menu.style.width = '250px';
             divStatus.classList.remove('name-status-close');
             divStatus.classList.add('name-status-open');
             profileDiv.style.height = '220px';

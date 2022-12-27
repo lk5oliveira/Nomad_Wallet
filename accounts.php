@@ -194,6 +194,7 @@ backToIndex();
         }
 
     </style>
+<!DOCTYPE html>
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -206,10 +207,9 @@ backToIndex();
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <link rel="stylesheet" href="css/accounts.css">
     <link rel="stylesheet" href="css/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/apexcharts" defer></script>
     <script src="https://kit.fontawesome.com/a440aae6fe.js" defer crossorigin="anonymous"></script>
-    <script src="include/JS/menu.js" defer></script>
-    <script src="include/JS/transactions-button.js" defer></script>
+    <script src="include/js/menu.js" defer></script>
+    <script src="include/js/transactions-button.js" defer></script>
     <title>Wallets</title>
 </head>
 <body onresize="resize();">

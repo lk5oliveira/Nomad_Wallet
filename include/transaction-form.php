@@ -316,7 +316,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             
         </div>
 
-<script src="include/JS/transactionsForm.js"></script>
+<script src="include/js/transactionsForm.js"></script>
 <script>
 let transactionType = document.getElementById('type');
 

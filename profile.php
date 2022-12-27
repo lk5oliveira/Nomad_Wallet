@@ -285,7 +285,7 @@
 
 
 </style>
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
     
@@ -301,14 +301,11 @@
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdn.jsdelivr.net/npm/apexcharts" defer></script>
     <script src="https://kit.fontawesome.com/a440aae6fe.js" defer crossorigin="anonymous"></script>
-    <script src="include/JS/menu.js" defer></script>
+    <script src="include/js/menu.js" defer></script>
     <script src="https://plentz.github.io/jquery-maskmoney/javascripts/jquery.maskMoney.min.js" type="text/javascript"></script>
     <title>Wallets</title>
 </head>
 <body onresize="resize();">
-    
-
-
     <div id="main-container">
 
     <?php include('menu.php'); ?>

@@ -38,7 +38,7 @@
 
     ?>
 
-
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -52,13 +52,12 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
   <link rel="stylesheet" href="css/dashboard-style.css">
   <link rel="stylesheet" href="css/style.css">
+  <script src="include/js/menu.js" defer></script>
   <script src="include/js/apexcharts/apexcharts.js"></script>
   <script src="https://kit.fontawesome.com/a440aae6fe.js" crossorigin="anonymous"></script>
-  <script src="include/JS/menu.js" defer></script>
-  <script src="include/JS/transactions-button.js" defer></script>
   <title>Dashboard</title>
 </head>
-<body onresize="graph();resize();">
+<body onresize="resize()">
 
 
     <div class="" id="main-container">
@@ -80,10 +79,9 @@
         <div id="greetings">
             <form action="" method="get">
                 <select name="currencyFilter" id="currencyFilter" class="filter-currency" onchange="this.form.submit()">
-                        <?php
-                          if($defaultCountry == false) {
-                            echo '<option value="' . strtolower($_SESSION['defaultCurrency']) . '">' . strtoupper($_SESSION['defaultCurrency']) . '</option>';
-                          }
+                        <option value="<?=strtolower($_SESSION['defaultCurrency'])?>"> <?= strtoupper($_SESSION['defaultCurrency']) ?> </option>;
+                        <option value="<?=strtolower($_SESSION['currencyCode'])?>"> <?= strtoupper($_SESSION['currencyCode']) ?> </option>;
+                          <?php
                             foreach($currencyList as $key => $currency) {
                                 if(!isset($_GET['currencyFilter'])) {
                                     if(strtolower($currency[0]) == strtolower($_SESSION['currencyCode'])) {
@@ -190,7 +188,7 @@ function graph() {
         }],
           chart: {
           type: 'bar',
-          height: '90%'
+          height: '250px'
         },
         plotOptions: {
           bar: {
@@ -219,11 +217,11 @@ function graph() {
           opacity: 1
         },
         colors: [function({ value, seriesIndex, w }) {
-        if (value < 0) {
-            return '#d9534f'
-        } else {
-            return '#5f96e5'
-        }
+          if (value < 0) {
+              return '#d9534f'
+          } else {
+              return '#5f96e5'
+          }
         }],
         tooltip: {
           y: {

@@ -112,6 +112,9 @@ if (isset($_POST["submit"])) {
 <body>
     <main>
         <div class="container">
+            <div class="now-logo">
+                <img src="img/logo.webp" alt="nomad-wallet-logo" class="img-logo">
+            </div>
             <div class="signup-form">
             <div id="register-signup">
                 <a href="index.php" id="register-link">Sign up</a>
