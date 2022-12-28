@@ -24,6 +24,7 @@ backToIndex();
             display: flex;
             flex-direction: column;
             flex-basis: 100%;
+            height: 25%;
         }
 
         .account-name {
@@ -46,6 +47,8 @@ backToIndex();
             gap: 10px;
             position: relative;
             z-index: 2;
+            min-height: 170px;
+            max-height: 170px;
         }
 
         .fa-circle {
@@ -154,6 +157,7 @@ backToIndex();
             flex-wrap: wrap;
             gap: 10px;
             border-radius: 5px;
+            overflow: auto;
         }
 
         small {
