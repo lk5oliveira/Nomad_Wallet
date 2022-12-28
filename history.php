@@ -268,6 +268,10 @@
         currency = document.getElementById("currencyFilter");
         currencyFilter = currency.value;
 
+        // country filter variables
+        country = document.getElementById("countryFilter");
+        countryFilter = country.value;
+
 
         if(currencyFilter.toUpperCase() == defaultCurrency.toUpperCase() || currencyFilter.toUpperCase() == 'ALL') { // If the currency filter is equal to the user default currency, then sum with the inital value
 

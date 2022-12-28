@@ -146,13 +146,13 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $stmt = $connection->prepare("INSERT INTO transactions (transactions_date, transactions_description, transactions_type, transactions_value, transactions_category, transactions_country, transactions_currency, transactions_exchange_rate, transactions_repeat_id, user_id) VALUES (?,?,?,?,?,?,?,?,?,?)");
     
-        if($type == 'expense') { // EXPENSE TRANSACTION (the value is passed with PHP as negative)
+        if(strtolower($type) == 'expense') { // EXPENSE TRANSACTION (the value is passed with PHP as negative)
             
             createIdForMultipleTransfers('transactions_repeat_id');
             $category = prepareData($_POST["category"]); // If type is transfer then this input field is disabled, thus the key will not exist in a global scope - it's not in gloabal scope to avoid errors.
             $generatedId = '';
-            $value = -1 * abs($value);
-            
+            $value = -1 * $value;
+           
             for($i = 0; $i < $repeatTime;$i++) {
 
                 $date = $_POST["date"];
@@ -197,7 +197,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             $connection->close();
     
         }
-        header('location: '. $_SERVER['HTTP_REFERER']);
+        //header('location: '. $_SERVER['HTTP_REFERER']);
        
     }
     

@@ -14,6 +14,10 @@
     $currencyList = getCurrencyList();
     $currencyList = addDefaultCurrencies($currencyList);
 
+    if(empty($currencyList)) {
+         $currencyList= array(array($currencyFilter));
+    }
+
     $total = getTotal('all', 'all', $currencyFilter); // balance total
 
     if(empty($_GET)) {
