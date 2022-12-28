@@ -12,11 +12,7 @@
     include('include/world-currency.php');
 
     $currencyList = getCurrencyList();
-    $defaultCountry = getDefaultCountry($currencyList);
-
-    if(empty($currencyList)) {
-         $currencyList= array(array($currencyFilter));
-    }
+    $currencyList = addDefaultCurrencies($currencyList);
 
     $total = getTotal('all', 'all', $currencyFilter); // balance total
 
@@ -79,8 +75,6 @@
         <div id="greetings">
             <form action="" method="get">
                 <select name="currencyFilter" id="currencyFilter" class="filter-currency" onchange="this.form.submit()">
-                        <option value="<?=strtolower($_SESSION['defaultCurrency'])?>"> <?= strtoupper($_SESSION['defaultCurrency']) ?> </option>;
-                        <option value="<?=strtolower($_SESSION['currencyCode'])?>"> <?= strtoupper($_SESSION['currencyCode']) ?> </option>;
                           <?php
                             foreach($currencyList as $key => $currency) {
                                 if(!isset($_GET['currencyFilter'])) {

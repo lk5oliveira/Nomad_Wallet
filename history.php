@@ -8,6 +8,7 @@
     $currenciesArray = json_encode($currency_list);
 
     $currencyList = getCurrencyList();
+    $currencyList = addDefaultCurrencies($currencyList);
 
     backToIndex();
 

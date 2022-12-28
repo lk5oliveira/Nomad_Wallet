@@ -50,18 +50,16 @@ function addDefaultCurrencies(array $array) {
      // if the default currency and current currency doesn't exist, then add it to the array.
 
      if($defaultCurrencyExists == false) {
-        $array[] = strtoupper($_SESSION['defaultCurrency']);
+        $array[][0] = strtoupper($_SESSION['defaultCurrency']);
      }
 
      if($currentCurrencyExists == false) {
-        $array[] = strtoupper($_SESSION['currencyCode']);
+        $array[][0] = strtoupper($_SESSION['currencyCode']);
      }
 
      return $array;  
 
 }
-
-print_r(addDefaultCurrencies(getCurrencyList()));
 
 function getDefaultCountry($currencyList) {
     /**
@@ -93,8 +91,6 @@ function getDefaultCountry($currencyList) {
 
 }
 
-
-
 function getCountryByCurrency($currency) {
     /**
      * GET THE LIST OF COUNTRIES BY CURRENCY AND USER ID
@@ -125,6 +121,7 @@ function generateAccounts() {
     // Declaring variables
     global $userId, $connection;
     $currencyList = getCurrencyList();
+    $currencyList = addDefaultCurrencies($currencyList);
     $initialValue = $_SESSION['initialValue'];
     $defaultCountry = $_SESSION['defaultCountry'];
     $defaultCurrency = $_SESSION['defaultCurrency'];
