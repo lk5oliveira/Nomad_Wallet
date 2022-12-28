@@ -23,6 +23,46 @@ function getCurrencyList() {
      return $result->fetch_all();
 }
 
+function addDefaultCurrencies(array $array) {
+    /**
+     * CHECK IF DEFAULT CURRENCY AND CURRENT CURRENCY TRAVEL EXISTS
+     * IF NOT, THEN ADD TO THE ARRAY FROM FUNCTION getCurrencyList()
+     * The two currency should always be available on the system for the currency filter on the panel and history page
+     * @param $array for multidimensional arrays, preferable from the function getCurrencyList()
+     * @return array
+     */
+
+     $defaultCurrencyExists = false;
+     $currentCurrencyExists = false;
+
+     foreach($array as $key) {
+
+        if(strtolower($_SESSION['defaultCurrency']) == strtolower($key[0])) {
+            $defaultCurrencyExists = true;
+        }
+
+        if(strtolower($_SESSION['currencyCode']) == strtolower($key[0])) {
+            $currentCurrencyExists = true; 
+        }
+
+     }
+
+     // if the default currency and current currency doesn't exist, then add it to the array.
+
+     if($defaultCurrencyExists == false) {
+        $array[] = strtoupper($_SESSION['defaultCurrency']);
+     }
+
+     if($currentCurrencyExists == false) {
+        $array[] = strtoupper($_SESSION['currencyCode']);
+     }
+
+     return $array;  
+
+}
+
+print_r(addDefaultCurrencies(getCurrencyList()));
+
 function getDefaultCountry($currencyList) {
     /**
      * CHECK IF THE DEFAULT CURRENCY EXISTS ON getCurrencyList FUNCTION.
