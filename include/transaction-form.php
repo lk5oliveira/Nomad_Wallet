@@ -98,8 +98,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         if(isset($_POST['repeat'])) {
             $repeat = $_POST['repeat'];
             $period = $_POST['repeat-period'];
-            $repeatTime = $_POST['amount-repeat'];
-            echo 'repeat on';     
+            $repeatTime = $_POST['amount-repeat'];  
         }
         $i = 1;
         $generatedId;
@@ -150,7 +149,6 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             createIdForMultipleTransfers('transactions_repeat_id');
             $category = prepareData($_POST["category"]); // If type is transfer then this input field is disabled, thus the key will not exist in a global scope - it's not in gloabal scope to avoid errors.
-            $generatedId = '';
             $value = -1 * $value;
            
             for($i = 0; $i < $repeatTime;$i++) {
@@ -161,14 +159,14 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     $date = date('Y-m-d', strtotime("+$i months", strtotime($date)));
     
-                    $stmt->bind_param("sssdssssss", $date, $description, $type, $value, $category, $country, $currency, $rate, $generatedId, $userIdResult);
+                    $stmt->bind_param("ssssssssss", $date, $description, $type, $value, $category, $country, $currency, $rate, $generatedId, $userIdResult);
                     $stmt->execute();
 
                 } else {
 
                     $date = date('Y-m-d', strtotime("+$i weeks", strtotime($date)));
     
-                    $stmt->bind_param("sssdssssss", $date, $description, $type, $value, $category, $country, $currency, $rate, $generatedId, $userIdResult);
+                    $stmt->bind_param("ssssssssss", $date, $description, $type, $value, $category, $country, $currency, $rate, $generatedId, $userIdResult);
                     $stmt->execute();
 
                 }
@@ -197,7 +195,8 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
             $connection->close();
     
         }
-        //header('location: '. $_SERVER['HTTP_REFERER']);
+        
+        header('location: '. $_SERVER['HTTP_REFERER']);
        
     }
     

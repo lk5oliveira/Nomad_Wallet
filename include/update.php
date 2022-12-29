@@ -237,7 +237,7 @@ if($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         $connection->close();
-        echo '<script>history.go(-2);</script>';
+        header('location: '. $_SERVER['HTTP_REFERER']);
         exit();
 
     }

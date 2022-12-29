@@ -131,7 +131,7 @@
                         <?php for ($i = 02; $i < 14;$i++) {
                             $m = date("m", mktime(0, 0, 0, $i, 0, 0));
                             $month = date("F", mktime(0, 0, 0, $i, 0, 0));
-                            $thisMonth = date('m')+1;
+                            $thisMonth = date('m') + 1;
                             if ($i == $thisMonth) {?>
                                 <option value="<?= $m ?>" selected><?= $month ?></option>;<?php
                             } else { ?>
@@ -140,8 +140,9 @@
                         }
                         ?>
                     </select>
+
                 <select name="year" id="yearFilter" onchange="applyFilter(); updateChart()">
-                    <option value="" disabled selected>Year</option>
+                    <option value="" disabled>Year</option>
                     <option value="00">All</option>
                     <?php
                     for ($i=2000; $i<=2050; $i++) { 
@@ -153,7 +154,6 @@
                         endif;
                     }?>
                 </select>
-                
 
                 <select type="text" id="countryFilter" onChange="applyFilter(); updateChart();">
                     <option value="all" disabled selected>Country</option>
@@ -224,7 +224,7 @@
          * This function works when the user selects to view the transaction history from a currency from the accounts page
          * @return void
          */
-        if(window.location.pathname == '/Nomad_Wallet/history.php') { // End of function if the user is acessing the page without any parameters
+        if(window.location.pathname == '/history.php') { // End of function if the user is acessing the page without any parameters
             return;
         }
 
