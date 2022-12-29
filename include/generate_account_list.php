@@ -162,6 +162,7 @@ function generateAccounts() {
         $num = rand(1,13);
 
         if ($currency[0] == $_SESSION['defaultCurrency']) {  // Currency is equal to the user default currency
+            $accountTotal += $initialValue;
             echo 
             "<div class='account-div' style='order: 0'>
                 <a href='history.php?currency=$currency[0]' tarfet='_self' class='account-name'><i class='fa-solid fa-circle'></i> $currency[0] 🏡</a>
